@@ -12,6 +12,16 @@ export const resources = {
       },
       registration: {
         title: 'Регистрация',
+        phoneConfirmTitle: 'Подтверждение номера телефона',
+        phoneConfirmDescription: 'Введите номер телефона для получения SMS с кодом',
+        smsDescription: 'Введите код из SMS, отправленный на номер',
+        sendCode: 'Отправить код',
+        resendCode: 'Отправить код повторно',
+        resendCodeIn: 'Отправить код повторно через',
+        codeLabel: 'Код из SMS',
+        close: 'Закрыть',
+        back: 'Назад',
+        phoneConfirmedPlaceholder: 'Телефон подтвержден. Следующий шаг будет реализован далее.',
       },
       profile: {
         title: 'Профиль',
@@ -74,6 +84,16 @@ export const resources = {
       },
       registration: {
         title: 'Registration',
+        phoneConfirmTitle: 'Phone Number Confirmation',
+        phoneConfirmDescription: 'Enter your phone number to receive an SMS code',
+        smsDescription: 'Enter the code from the SMS sent to',
+        sendCode: 'Send Code',
+        resendCode: 'Resend Code',
+        resendCodeIn: 'Resend code in',
+        codeLabel: 'SMS Code',
+        close: 'Close',
+        back: 'Back',
+        phoneConfirmedPlaceholder: 'Phone confirmed. The next step will be implemented next.',
       },
       profile: {
         title: 'Profile',

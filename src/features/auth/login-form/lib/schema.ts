@@ -1,7 +1,7 @@
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import type { CountryCode } from 'libphonenumber-js';
 import { z } from 'zod';
-import { COUNTRIES, getCountryByCode } from './countries';
+import { COUNTRIES, getCountryByCode } from '@shared/config';
 
 export const loginFormSchema = z
   .object({

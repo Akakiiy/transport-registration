@@ -1,9 +1,8 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { View } from 'react-native';
-import { useTranslation } from 'react-i18next';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { ROUTES } from '@app/navigation/routes';
 import { RootStackParamList } from '@app/navigation/types';
-import { AppButton, ScreenLayout } from '@shared/ui';
+import { RegistrationForm } from '@features/auth/registration-form';
 import { styles } from './styles';
 
 type RegistrationScreenProps = NativeStackScreenProps<
@@ -12,16 +11,17 @@ type RegistrationScreenProps = NativeStackScreenProps<
 >;
 
 export const RegistrationScreen = ({ navigation }: RegistrationScreenProps) => {
-  const { t } = useTranslation();
+  const handleBack = () => {
+    navigation.goBack();
+  };
+
+  const handleClose = () => {
+    navigation.navigate(ROUTES.Login);
+  };
 
   return (
-    <ScreenLayout title={t('registration.title')}>
-      <View style={styles.content}>
-        <AppButton
-          title={t('common.next')}
-          onPress={() => navigation.navigate(ROUTES.Profile)}
-        />
-      </View>
-    </ScreenLayout>
+    <SafeAreaView style={styles.safeArea}>
+      <RegistrationForm onBack={handleBack} onClose={handleClose} />
+    </SafeAreaView>
   );
 };

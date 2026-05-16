@@ -5,10 +5,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { wait } from '@shared/lib';
 import { AppButton, Checkbox, PasswordInput, PhoneInput } from '@shared/ui';
-import {
-  COUNTRIES,
-  DEFAULT_COUNTRY_CODE,
-} from './lib/countries';
+import { COUNTRIES, DEFAULT_COUNTRY_CODE } from '@shared/config';
 import { loginFormSchema } from './lib/schema';
 import type { LoginFormValues } from './lib/types';
 import { styles } from './styles';

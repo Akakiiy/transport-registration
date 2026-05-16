@@ -1,11 +1,16 @@
 import { ScrollView, Text, Pressable, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '@app/navigation/types';
+import { ROUTES } from '@app/navigation/routes';
 import { LoginForm } from '@features/auth/login-form';
 import { LanguageSwitcher, TranslineLogo } from '@shared/ui';
 import { styles } from './styles';
 
-export const LoginScreen = () => {
+type LoginScreenProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
+
+export const LoginScreen = ({ navigation }: LoginScreenProps) => {
   const { t } = useTranslation();
 
   return (
@@ -24,7 +29,7 @@ export const LoginScreen = () => {
         </View>
         <View style={styles.linksRow}>
           <Text style={styles.noAccountText}>{t('login.noAccount')}</Text>
-          <Pressable onPress={() => console.log('register pressed')}>
+          <Pressable onPress={() => navigation.navigate(ROUTES.Registration)}>
             <Text style={styles.registerLink}>{t('login.register')}</Text>
           </Pressable>
         </View>
