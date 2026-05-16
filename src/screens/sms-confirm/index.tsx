@@ -1,10 +1,9 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { ROUTES } from '../../app/navigation/routes';
-import { RootStackParamList } from '../../app/navigation/types';
-import { AppButton } from '../../shared/ui/app-button';
-import { ScreenLayout } from '../../shared/ui/screen-layout';
+import { ROUTES } from '@app/navigation/routes';
+import { RootStackParamList } from '@app/navigation/types';
+import { AppButton, ScreenLayout } from '@shared/ui';
 import { styles } from './styles';
 
 type SmsConfirmScreenProps = NativeStackScreenProps<

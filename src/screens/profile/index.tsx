@@ -1,11 +1,9 @@
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { ScreenLayout } from '../../shared/ui/screen-layout';
+import { ScreenLayout } from '@shared/ui';
 import { styles } from './styles';
 
-type ProfileScreenProps = {};
-
-export const ProfileScreen = ({}: ProfileScreenProps) => {
+export const ProfileScreen = () => {
   const { t } = useTranslation();
 
   return (

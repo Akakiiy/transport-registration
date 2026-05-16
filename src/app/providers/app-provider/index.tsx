@@ -1,9 +1,7 @@
-import { AppNavigator } from '../../navigation';
-import { I18nProvider } from '../i18n-provider';
+import { AppNavigator } from '@app/navigation';
+import { I18nProvider } from '@app/providers/i18n-provider';
 
-type AppProviderProps = {};
-
-export const AppProvider = ({}: AppProviderProps) => {
+export const AppProvider = () => {
   return (
     <I18nProvider>
       <AppNavigator />

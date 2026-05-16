@@ -1,7 +1,7 @@
 import { ReactNode, useEffect } from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { i18n } from '../../../shared/config/i18n';
-import { getSelectedLanguage } from '../../../shared/lib/storage';
+import { i18n } from '@shared/config/i18n';
+import { getSelectedLanguage } from '@shared/lib';
 
 type I18nProviderProps = {
   children: ReactNode;
@@ -12,16 +12,20 @@ export const I18nProvider = ({ children }: I18nProviderProps) => {
     let isMounted = true;
 
     const setupLanguage = async () => {
-      const language = await getSelectedLanguage();
+      try {
+        const language = await getSelectedLanguage();
 
-      if (!isMounted || !language) {
-        return;
+        if (!isMounted || !language) {
+          return;
+        }
+
+        await i18n.changeLanguage(language);
+      } catch (error) {
+        console.warn('[I18nProvider] Failed to setup language', error);
       }
-
-      await i18n.changeLanguage(language);
     };
 
-    setupLanguage().catch(() => undefined);
+    setupLanguage();
 
     return () => {
       isMounted = false;

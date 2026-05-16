@@ -5,18 +5,17 @@ import { resources } from './resources';
 type SupportedLanguage = 'ru' | 'en';
 
 if (!i18n.isInitialized) {
-  i18n
-    .use(initReactI18next)
-    .init({
-      compatibilityJSON: 'v4',
-      fallbackLng: 'ru',
-      lng: 'ru',
-      resources,
-      interpolation: {
-        escapeValue: false,
-      },
-    })
-    .catch(() => undefined);
+  i18n.use(initReactI18next).init({
+    compatibilityJSON: 'v4',
+    fallbackLng: 'ru',
+    lng: 'ru',
+    resources,
+    interpolation: {
+      escapeValue: false,
+    },
+  }).catch((error) => {
+    console.warn('[i18n] Failed to initialize translations', error);
+  });
 }
 
 export { i18n };

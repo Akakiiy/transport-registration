@@ -3,17 +3,15 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { PhoneInputScreen } from '../../screens/phone-input';
-import { ProfileScreen } from '../../screens/profile';
-import { RegistrationScreen } from '../../screens/registration';
-import { RoleSelectScreen } from '../../screens/role-select';
-import { SmsConfirmScreen } from '../../screens/sms-confirm';
-import { ScreenLayout } from '../../shared/ui/screen-layout';
-import { getDraft, getProfile } from '../../shared/lib/storage';
+import { PhoneInputScreen } from '@screens/phone-input';
+import { ProfileScreen } from '@screens/profile';
+import { RegistrationScreen } from '@screens/registration';
+import { RoleSelectScreen } from '@screens/role-select';
+import { SmsConfirmScreen } from '@screens/sms-confirm';
+import { getDraft, getProfile } from '@shared/lib';
+import { ScreenLayout } from '@shared/ui';
 import { ROUTES } from './routes';
 import { RootStackParamList } from './types';
-
-type AppNavigatorProps = {};
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const styles = StyleSheet.create({
@@ -23,7 +21,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export const AppNavigator = ({}: AppNavigatorProps) => {
+export const AppNavigator = () => {
   const { t } = useTranslation();
   const [isBootstrapping, setIsBootstrapping] = useState(true);
   const [initialRouteName, setInitialRouteName] =
@@ -33,25 +31,35 @@ export const AppNavigator = ({}: AppNavigatorProps) => {
     let isMounted = true;
 
     const bootstrap = async () => {
-      const profile = await getProfile();
-      const draft = await getDraft();
+      try {
+        const profile = await getProfile();
+        const draft = await getDraft();
 
-      if (!isMounted) {
-        return;
+        if (!isMounted) {
+          return;
+        }
+
+        if (profile) {
+          setInitialRouteName(ROUTES.Profile);
+        } else if (draft) {
+          setInitialRouteName(ROUTES.Registration);
+        } else {
+          setInitialRouteName(ROUTES.PhoneInput);
+        }
+      } catch (error) {
+        console.warn('[AppNavigator] Failed to bootstrap app', error);
+
+        if (isMounted) {
+          setInitialRouteName(ROUTES.PhoneInput);
+        }
+      } finally {
+        if (isMounted) {
+          setIsBootstrapping(false);
+        }
       }
-
-      if (profile) {
-        setInitialRouteName(ROUTES.Profile);
-      } else if (draft) {
-        setInitialRouteName(ROUTES.Registration);
-      } else {
-        setInitialRouteName(ROUTES.PhoneInput);
-      }
-
-      setIsBootstrapping(false);
     };
 
-    bootstrap().catch(() => undefined);
+    bootstrap();
 
     return () => {
       isMounted = false;

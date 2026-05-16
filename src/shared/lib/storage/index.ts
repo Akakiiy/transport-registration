@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { STORAGE_KEYS } from '../../config/storage-keys';
-import { SupportedLanguage } from '../../config/i18n';
-import { RegistrationDraft, UserProfile } from '../../types/registration';
+import { STORAGE_KEYS } from '@shared/config';
+import { SupportedLanguage } from '@shared/config/i18n';
+import { RegistrationDraft, UserProfile } from '@shared/types';
 
 const parseJson = <T>(value: string | null): T | null => {
   if (!value) {
@@ -10,16 +10,9 @@ const parseJson = <T>(value: string | null): T | null => {
 
   try {
     return JSON.parse(value) as T;
-  } catch {
+  } catch (error) {
+    console.warn('[storage] Failed to parse JSON value', error);
     return null;
-  }
-};
-
-const setJson = async <T>(key: string, value: T): Promise<void> => {
-  try {
-    await AsyncStorage.setItem(key, JSON.stringify(value));
-  } catch {
-    // Intentionally ignore to avoid app crash on storage failures.
   }
 };
 
@@ -27,20 +20,30 @@ export const getDraft = async (): Promise<RegistrationDraft | null> => {
   try {
     const value = await AsyncStorage.getItem(STORAGE_KEYS.registrationDraft);
     return parseJson<RegistrationDraft>(value);
-  } catch {
+  } catch (error) {
+    console.warn('[storage] Failed to read draft', error);
     return null;
   }
 };
 
 export const saveDraft = async (draft: RegistrationDraft): Promise<void> => {
-  await setJson(STORAGE_KEYS.registrationDraft, draft);
+  try {
+    await AsyncStorage.setItem(
+      STORAGE_KEYS.registrationDraft,
+      JSON.stringify(draft),
+    );
+  } catch (error) {
+    console.warn('[storage] Failed to save draft', error);
+    throw error;
+  }
 };
 
 export const clearDraft = async (): Promise<void> => {
   try {
     await AsyncStorage.removeItem(STORAGE_KEYS.registrationDraft);
-  } catch {
-    // Intentionally ignore to avoid app crash on storage failures.
+  } catch (error) {
+    console.warn('[storage] Failed to clear draft', error);
+    throw error;
   }
 };
 
@@ -48,20 +51,27 @@ export const getProfile = async (): Promise<UserProfile | null> => {
   try {
     const value = await AsyncStorage.getItem(STORAGE_KEYS.userProfile);
     return parseJson<UserProfile>(value);
-  } catch {
+  } catch (error) {
+    console.warn('[storage] Failed to read profile', error);
     return null;
   }
 };
 
 export const saveProfile = async (profile: UserProfile): Promise<void> => {
-  await setJson(STORAGE_KEYS.userProfile, profile);
+  try {
+    await AsyncStorage.setItem(STORAGE_KEYS.userProfile, JSON.stringify(profile));
+  } catch (error) {
+    console.warn('[storage] Failed to save profile', error);
+    throw error;
+  }
 };
 
 export const clearProfile = async (): Promise<void> => {
   try {
     await AsyncStorage.removeItem(STORAGE_KEYS.userProfile);
-  } catch {
-    // Intentionally ignore to avoid app crash on storage failures.
+  } catch (error) {
+    console.warn('[storage] Failed to clear profile', error);
+    throw error;
   }
 };
 
@@ -74,7 +84,8 @@ export const getSelectedLanguage = async (): Promise<SupportedLanguage | null> =
     }
 
     return null;
-  } catch {
+  } catch (error) {
+    console.warn('[storage] Failed to read selected language', error);
     return null;
   }
 };
@@ -84,8 +95,9 @@ export const saveSelectedLanguage = async (
 ): Promise<void> => {
   try {
     await AsyncStorage.setItem(STORAGE_KEYS.selectedLanguage, language);
-  } catch {
-    // Intentionally ignore to avoid app crash on storage failures.
+  } catch (error) {
+    console.warn('[storage] Failed to save selected language', error);
+    throw error;
   }
 };
 
@@ -95,7 +107,8 @@ export const clearAllRegistrationData = async (): Promise<void> => {
       AsyncStorage.removeItem(STORAGE_KEYS.registrationDraft),
       AsyncStorage.removeItem(STORAGE_KEYS.userProfile),
     ]);
-  } catch {
-    // Intentionally ignore to avoid app crash on storage failures.
+  } catch (error) {
+    console.warn('[storage] Failed to clear registration data', error);
+    throw error;
   }
 };
