@@ -6,6 +6,10 @@ import { styles } from './styles';
 
 export const LanguageSwitcher = () => {
   const { i18n, t } = useTranslation();
+  const currentLanguage: SupportedLanguage = i18n.language.startsWith('ru')
+    ? 'ru'
+    : 'en';
+  const nextLanguage: SupportedLanguage = currentLanguage === 'ru' ? 'en' : 'ru';
 
   const changeLanguage = async (language: SupportedLanguage) => {
     try {
@@ -24,28 +28,15 @@ export const LanguageSwitcher = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{t('common.language')}</Text>
       <Pressable
-        style={[
-          styles.button,
-          i18n.language === 'ru' && styles.buttonActive,
-        ]}
+        style={[styles.button, styles.buttonActive]}
         onPress={() => {
-          changeLanguage('ru');
+          changeLanguage(nextLanguage);
         }}
       >
-        <Text style={styles.text}>{t('common.ru')}</Text>
-      </Pressable>
-      <Pressable
-        style={[
-          styles.button,
-          i18n.language === 'en' && styles.buttonActive,
-        ]}
-        onPress={() => {
-          changeLanguage('en');
-        }}
-      >
-        <Text style={styles.text}>{t('common.en')}</Text>
+        <Text style={styles.text}>
+          {currentLanguage === 'ru' ? t('common.ru') : t('common.en')}
+        </Text>
       </Pressable>
     </View>
   );

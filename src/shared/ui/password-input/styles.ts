@@ -28,12 +28,6 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     minHeight: 48,
   },
-  toggleText: {
-    color: '#00a0b0',
-    fontSize: 12,
-    fontWeight: '700',
-    paddingHorizontal: 4,
-  },
   error: {
     color: '#ef4444',
     fontSize: 12,

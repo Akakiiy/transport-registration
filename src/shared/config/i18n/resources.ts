@@ -31,8 +31,8 @@ export const resources = {
         noAccount: 'Нет аккаунта?',
         register: 'Зарегистрируйтесь',
         forgotPassword: 'Забыли пароль?',
-        questions: 'Вопросы?',
-        supportPhone: '+7 (700) 000-00-00',
+        questions: 'Появились вопросы?',
+        supportPhone: 'телефон поддержки: +7 (999) 999-99-99',
         genericError: 'Не удалось выполнить вход. Попробуйте снова.',
       },
       common: {
@@ -94,7 +94,7 @@ export const resources = {
         register: 'Register',
         forgotPassword: 'Forgot password?',
         questions: 'Need help?',
-        supportPhone: '+7 (700) 000-00-00',
+        supportPhone: 'support phone: +7 (999) 999-99-99',
         genericError: 'Unable to sign in. Please try again.',
       },
       common: {

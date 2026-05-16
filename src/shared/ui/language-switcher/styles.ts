@@ -2,26 +2,17 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
-    alignSelf: 'flex-end',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  label: {
-    color: '#4b5563',
-    fontSize: 12,
-    fontWeight: '500',
+    alignSelf: 'flex-start',
   },
   button: {
-    borderColor: '#d1d5db',
-    borderRadius: 8,
-    borderWidth: 1,
-    paddingHorizontal: 10,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    minWidth: 48,
+    paddingHorizontal: 12,
     paddingVertical: 6,
   },
   buttonActive: {
-    borderColor: '#3b82f6',
-    backgroundColor: '#dbeafe',
+    backgroundColor: '#dff7fb',
   },
   text: {
     color: '#374151',

@@ -11,11 +11,9 @@ export const LoginScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        <View style={styles.languageWrapper}>
-          <LanguageSwitcher />
-        </View>
-        <View style={styles.logoWrapper}>
+        <View style={styles.header}>
           <TranslineLogo />
+          <LanguageSwitcher />
         </View>
         <Text style={styles.title}>{t('login.titleLine1')}</Text>
         <Text style={styles.title}>{t('login.titleLine2')}</Text>
@@ -30,10 +28,10 @@ export const LoginScreen = () => {
             <Text style={styles.registerLink}>{t('login.register')}</Text>
           </Pressable>
         </View>
-        <Pressable onPress={() => console.log('forgot password pressed')}>
-          <Text style={styles.forgotLink}>{t('login.forgotPassword')}</Text>
-        </Pressable>
         <View style={styles.footer}>
+          <Pressable onPress={() => console.log('forgot password pressed')}>
+            <Text style={styles.forgotLink}>{t('login.forgotPassword')}</Text>
+          </Pressable>
           <Text style={styles.footerText}>{t('login.questions')}</Text>
           <Text style={styles.supportText}>{t('login.supportPhone')}</Text>
         </View>

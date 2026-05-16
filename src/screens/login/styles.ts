@@ -7,13 +7,12 @@ export const styles = StyleSheet.create({
   },
   contentContainer: {
     flexGrow: 1,
-    padding: 24,
+    padding: 16,
   },
-  languageWrapper: {
-    alignItems: 'flex-end',
-    marginBottom: 16,
-  },
-  logoWrapper: {
+  header: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 20,
   },
   title: {
@@ -55,16 +54,15 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
   },
   forgotLink: {
-    alignSelf: 'center',
     color: '#00a0b0',
     fontSize: 14,
     fontWeight: '600',
-    marginTop: 10,
+    marginBottom: 16,
   },
   footer: {
     alignItems: 'center',
     marginTop: 'auto',
-    paddingTop: 24,
+    paddingTop: 32,
   },
   footerText: {
     color: '#6b7280',
