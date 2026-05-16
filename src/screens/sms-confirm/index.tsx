@@ -1,5 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { ROUTES } from '../../app/navigation/routes';
 import { RootStackParamList } from '../../app/navigation/types';
 import { AppButton } from '../../shared/ui/app-button';
@@ -12,11 +13,13 @@ type SmsConfirmScreenProps = NativeStackScreenProps<
 >;
 
 export const SmsConfirmScreen = ({ navigation }: SmsConfirmScreenProps) => {
+  const { t } = useTranslation();
+
   return (
-    <ScreenLayout title="SMS Confirm">
+    <ScreenLayout title={t('smsConfirm.title')}>
       <View style={styles.content}>
         <AppButton
-          title="Go to Registration"
+          title={t('common.next')}
           onPress={() => navigation.navigate(ROUTES.Registration)}
         />
       </View>
