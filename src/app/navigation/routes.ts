@@ -1,7 +1,5 @@
 export const ROUTES = {
-  PhoneInput: 'PhoneInput',
-  RoleSelect: 'RoleSelect',
-  SmsConfirm: 'SmsConfirm',
+  Login: 'Login',
   Registration: 'Registration',
   Profile: 'Profile',
 } as const;

@@ -1,7 +1,5 @@
 export type RootStackParamList = {
-  PhoneInput: undefined;
-  RoleSelect: undefined;
-  SmsConfirm: undefined;
+  Login: undefined;
   Registration: undefined;
   Profile: undefined;
 };
