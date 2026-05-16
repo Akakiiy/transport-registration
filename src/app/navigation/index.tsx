@@ -24,8 +24,9 @@ const styles = StyleSheet.create({
 export const AppNavigator = () => {
   const { t } = useTranslation();
   const [isBootstrapping, setIsBootstrapping] = useState(true);
-  const [initialRouteName, setInitialRouteName] =
-    useState<keyof RootStackParamList>(ROUTES.PhoneInput);
+  const [initialRouteName, setInitialRouteName] = useState<
+    keyof RootStackParamList
+  >(ROUTES.PhoneInput);
 
   useEffect(() => {
     let isMounted = true;

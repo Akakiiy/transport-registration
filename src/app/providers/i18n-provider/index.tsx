@@ -1,13 +1,10 @@
-import { ReactNode, useEffect } from 'react';
+import { useEffect } from 'react';
+import type { PropsWithChildren } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { i18n } from '@shared/config/i18n';
 import { getSelectedLanguage } from '@shared/lib';
 
-type I18nProviderProps = {
-  children: ReactNode;
-};
-
-export const I18nProvider = ({ children }: I18nProviderProps) => {
+export const I18nProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     let isMounted = true;
 

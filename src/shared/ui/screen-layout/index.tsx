@@ -1,11 +1,10 @@
-import { ReactNode } from 'react';
+import type { PropsWithChildren } from 'react';
 import { SafeAreaView, Text, View } from 'react-native';
 import { LanguageSwitcher } from '../language-switcher';
 import { styles } from './styles';
 
-type ScreenLayoutProps = {
+type ScreenLayoutProps = PropsWithChildren & {
   title: string;
-  children: ReactNode;
 };
 
 export const ScreenLayout = ({ title, children }: ScreenLayoutProps) => {
