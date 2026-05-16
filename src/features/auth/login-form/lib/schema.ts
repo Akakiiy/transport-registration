@@ -1,13 +1,15 @@
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import type { CountryCode } from 'libphonenumber-js';
 import { z } from 'zod';
-import { getCountryByCode } from './countries';
+import { COUNTRIES, getCountryByCode } from './countries';
 
 export const loginFormSchema = z
   .object({
     phone: z.string().trim().min(1, 'errors.required'),
     countryCode: z.custom<CountryCode>(
-      (value) => typeof value === 'string' && value.length > 0,
+      (value) =>
+        typeof value === 'string' &&
+        COUNTRIES.some((country) => country.code === value),
       'errors.required',
     ),
     password: z.string().min(4, 'errors.passwordMin'),

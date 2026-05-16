@@ -1,22 +1,17 @@
 import { useMemo, useState } from 'react';
 import { Modal, Pressable, ScrollView, Text, TextInput, View, } from 'react-native';
 import { MaskedTextInput } from 'react-native-mask-text';
+import type { CountryCode } from 'libphonenumber-js';
+import type { CountryOption } from '@shared/types';
 import { styles } from './styles';
-
-type CountryOption = {
-  code: string;
-  name: string;
-  callingCode: string;
-  flag: string;
-};
 
 type PhoneInputProps = {
   label?: string;
-  value?: string;
-  onChangeText?: (value: string) => void;
+  value: string;
+  onChangeText: (value: string) => void;
   onBlur?: () => void;
-  countryCode: string;
-  onChangeCountry?: (countryCode: string) => void;
+  countryCode: CountryCode;
+  onChangeCountry: (countryCode: CountryCode) => void;
   countries: CountryOption[];
   placeholder?: string;
   error?: string;
@@ -46,10 +41,6 @@ export const PhoneInput = ({
   const maxLength = isRuKz ? 10 : 15;
 
   const handleChange = (nextValue: string) => {
-    if (!onChangeText) {
-      return;
-    }
-
     const normalizedDigits = nextValue.replace(/\D/g, '').slice(0, maxLength);
     onChangeText(normalizedDigits);
   };
@@ -73,7 +64,7 @@ export const PhoneInput = ({
             mask="(999) 999-99-99"
             onBlur={onBlur}
             onChangeText={(_, rawText) => {
-              onChangeText?.(rawText.slice(0, 10));
+              onChangeText(rawText.slice(0, 10));
             }}
             placeholder={computedPlaceholder}
             style={styles.input}
@@ -108,7 +99,7 @@ export const PhoneInput = ({
                 <Pressable
                   key={country.code}
                   onPress={() => {
-                    onChangeCountry?.(country.code);
+                    onChangeCountry(country.code);
                     setIsModalVisible(false);
                   }}
                   style={styles.countryRow}

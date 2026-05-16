@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Text, View } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import type { CountryCode } from 'libphonenumber-js';
 import { wait } from '@shared/lib';
 import { AppButton, Checkbox, PasswordInput, PhoneInput } from '@shared/ui';
 import {
@@ -70,7 +69,7 @@ export const LoginForm = () => {
             label={t('login.phoneLabel')}
             onBlur={onBlur}
             onChangeCountry={(nextCountryCode) => {
-              setValue('countryCode', nextCountryCode as CountryCode, {
+              setValue('countryCode', nextCountryCode, {
                 shouldTouch: true,
                 shouldValidate: true,
               });

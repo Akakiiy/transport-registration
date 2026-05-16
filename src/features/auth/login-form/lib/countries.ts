@@ -1,4 +1,5 @@
-import type { CountryOption } from './types';
+import type { CountryCode } from 'libphonenumber-js';
+import type { CountryOption } from '@shared/types';
 
 export const COUNTRIES: CountryOption[] = [
   { code: 'KZ', name: 'Kazakhstan', callingCode: '+7', flag: '🇰🇿' },
@@ -13,7 +14,7 @@ export const COUNTRIES: CountryOption[] = [
   { code: 'TR', name: 'Turkey', callingCode: '+90', flag: '🇹🇷' },
 ];
 
-export const DEFAULT_COUNTRY_CODE = 'KZ';
+export const DEFAULT_COUNTRY_CODE: CountryCode = 'KZ';
 
 const FALLBACK_COUNTRY: CountryOption = {
   code: 'KZ',
@@ -22,7 +23,7 @@ const FALLBACK_COUNTRY: CountryOption = {
   flag: '🇰🇿',
 };
 
-export const getCountryByCode = (countryCode: string): CountryOption => {
+export const getCountryByCode = (countryCode: CountryCode): CountryOption => {
   const defaultCountry = COUNTRIES.find(
     country => country.code === DEFAULT_COUNTRY_CODE,
   );
