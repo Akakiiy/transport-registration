@@ -5,6 +5,12 @@ export const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     flex: 1,
   },
+  keyboardContainer: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
   container: {
     flex: 1,
     padding: 16,
