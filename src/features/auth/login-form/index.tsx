@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Text, View } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import type { CountryCode } from 'libphonenumber-js';
 import { wait } from '@shared/lib';
 import { AppButton, Checkbox, PasswordInput, PhoneInput } from '@shared/ui';
 import {
@@ -20,7 +21,7 @@ export const LoginForm = () => {
 
   const {
     control,
-    formState: { errors, isValid },
+    formState: { isValid },
     handleSubmit,
     setValue,
     watch,
@@ -31,7 +32,8 @@ export const LoginForm = () => {
       password: '',
       phone: '',
     },
-    mode: 'onChange',
+    mode: 'onTouched',
+    reValidateMode: 'onChange',
     resolver: zodResolver(loginFormSchema),
   });
 
@@ -56,19 +58,26 @@ export const LoginForm = () => {
       <Controller
         control={control}
         name="phone"
-        render={({ field: { onChange, value } }) => (
+        render={({ field: { onBlur, onChange, value }, fieldState }) => (
           <PhoneInput
             countries={COUNTRIES}
             countryCode={countryCode}
             error={
-              errors.phone ? t(errors.phone.message ?? 'errors.invalidPhone') : undefined
+              fieldState.error
+                ? t(fieldState.error.message ?? 'errors.invalidPhone')
+                : undefined
             }
             label={t('login.phoneLabel')}
+            onBlur={onBlur}
             onChangeCountry={(nextCountryCode) => {
-              setValue('countryCode', nextCountryCode, {
+              setValue('countryCode', nextCountryCode as CountryCode, {
+                shouldTouch: true,
                 shouldValidate: true,
               });
-              setValue('phone', '', { shouldValidate: true });
+              setValue('phone', '', {
+                shouldTouch: true,
+                shouldValidate: true,
+              });
             }}
             onChangeText={onChange}
             placeholder={t('login.phonePlaceholder')}
@@ -79,14 +88,19 @@ export const LoginForm = () => {
       <Controller
         control={control}
         name="password"
-        render={({ field: { onChange, value } }) => (
+        render={({ field: { onBlur, onChange, value }, fieldState }) => (
           <PasswordInput
             error={
-              errors.password ? t(errors.password.message ?? 'errors.passwordMin') : undefined
+              fieldState.error
+                ? t(fieldState.error.message ?? 'errors.passwordMin')
+                : undefined
             }
+            hideLabel={t('common.hide')}
             label={t('login.passwordLabel')}
+            onBlur={onBlur}
             onChangeText={onChange}
             placeholder={t('login.passwordPlaceholder')}
+            showLabel={t('common.show')}
             value={value}
           />
         )}
@@ -94,20 +108,25 @@ export const LoginForm = () => {
       <Controller
         control={control}
         name="isPolicyAccepted"
-        render={({ field: { onChange, value } }) => (
-          <Checkbox
-            checked={Boolean(value)}
-            labelLink={t('login.policyLink')}
-            labelPrefix={t('login.policyPrefix')}
-            onPress={() => onChange(!value)}
-          />
+        render={({ field: { onBlur, onChange, value }, fieldState }) => (
+          <>
+            <Checkbox
+              checked={Boolean(value)}
+              labelLink={t('login.policyLink')}
+              labelPrefix={t('login.policyPrefix')}
+              onPress={() => {
+                onChange(!value);
+                onBlur();
+              }}
+            />
+            {fieldState.error ? (
+              <Text style={styles.policyError}>
+                {t(fieldState.error.message ?? 'errors.policyRequired')}
+              </Text>
+            ) : null}
+          </>
         )}
       />
-      {errors.isPolicyAccepted ? (
-        <Text style={styles.policyError}>
-          {t(errors.isPolicyAccepted.message ?? 'errors.policyRequired')}
-        </Text>
-      ) : null}
       {submitError ? <Text style={styles.submitError}>{submitError}</Text> : null}
       <AppButton
         disabled={!isValid || isSubmitting}

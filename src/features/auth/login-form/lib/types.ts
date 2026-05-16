@@ -9,7 +9,7 @@ export type CountryOption = {
 
 export type LoginFormValues = {
   phone: string;
-  countryCode: string;
+  countryCode: CountryCode;
   password: string;
   isPolicyAccepted: boolean;
 };

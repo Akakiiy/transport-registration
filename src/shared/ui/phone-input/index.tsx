@@ -1,12 +1,6 @@
 import { useMemo, useState } from 'react';
-import {
-  Modal,
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { Modal, Pressable, ScrollView, Text, TextInput, View, } from 'react-native';
+import { MaskedTextInput } from 'react-native-mask-text';
 import { styles } from './styles';
 
 type CountryOption = {
@@ -20,6 +14,7 @@ type PhoneInputProps = {
   label?: string;
   value?: string;
   onChangeText?: (value: string) => void;
+  onBlur?: () => void;
   countryCode: string;
   onChangeCountry?: (countryCode: string) => void;
   countries: CountryOption[];
@@ -27,42 +22,11 @@ type PhoneInputProps = {
   error?: string;
 };
 
-const formatRuKzPhone = (rawValue: string): string => {
-  const numbers = rawValue.replace(/\D/g, '').slice(0, 10);
-  const p1 = numbers.slice(0, 3);
-  const p2 = numbers.slice(3, 6);
-  const p3 = numbers.slice(6, 8);
-  const p4 = numbers.slice(8, 10);
-
-  if (!p1) {
-    return '';
-  }
-
-  let formatted = `(${p1}`;
-
-  if (p1.length === 3) {
-    formatted += ')';
-  }
-
-  if (p2) {
-    formatted += ` ${p2}`;
-  }
-
-  if (p3) {
-    formatted += `-${p3}`;
-  }
-
-  if (p4) {
-    formatted += `-${p4}`;
-  }
-
-  return formatted;
-};
-
 export const PhoneInput = ({
   label,
   value,
   onChangeText,
+  onBlur,
   countryCode,
   onChangeCountry,
   countries,
@@ -73,25 +37,21 @@ export const PhoneInput = ({
 
   const selectedCountry = useMemo(() => {
     return (
-      countries.find((country) => country.code === countryCode) ?? countries[0]
+      countries.find(country => country.code === countryCode) ?? countries[0]
     );
   }, [countries, countryCode]);
 
   const isRuKz = selectedCountry.code === 'KZ' || selectedCountry.code === 'RU';
   const computedPlaceholder = isRuKz ? '(000) 000-00-00' : placeholder;
+  const maxLength = isRuKz ? 10 : 15;
 
   const handleChange = (nextValue: string) => {
     if (!onChangeText) {
       return;
     }
 
-    if (isRuKz) {
-      onChangeText(formatRuKzPhone(nextValue));
-      return;
-    }
-
-    const normalized = nextValue.replace(/[^\d\s()-]/g, '').slice(0, 20);
-    onChangeText(normalized);
+    const normalizedDigits = nextValue.replace(/\D/g, '').slice(0, maxLength);
+    onChangeText(normalizedDigits);
   };
 
   return (
@@ -107,13 +67,29 @@ export const PhoneInput = ({
           </Text>
           <Text style={styles.arrow}>v</Text>
         </Pressable>
-        <TextInput
-          keyboardType="phone-pad"
-          onChangeText={handleChange}
-          placeholder={computedPlaceholder}
-          style={styles.input}
-          value={value}
-        />
+        {isRuKz ? (
+          <MaskedTextInput
+            keyboardType="phone-pad"
+            mask="(999) 999-99-99"
+            onBlur={onBlur}
+            onChangeText={(_, rawText) => {
+              onChangeText?.(rawText.slice(0, 10));
+            }}
+            placeholder={computedPlaceholder}
+            style={styles.input}
+            value={value}
+          />
+        ) : (
+          <TextInput
+            keyboardType="phone-pad"
+            maxLength={maxLength}
+            onBlur={onBlur}
+            onChangeText={handleChange}
+            placeholder={computedPlaceholder}
+            style={styles.input}
+            value={value}
+          />
+        )}
       </View>
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Modal
@@ -128,7 +104,7 @@ export const PhoneInput = ({
         >
           <Pressable style={styles.modalContent}>
             <ScrollView>
-              {countries.map((country) => (
+              {countries.map(country => (
                 <Pressable
                   key={country.code}
                   onPress={() => {

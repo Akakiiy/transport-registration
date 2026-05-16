@@ -6,16 +6,22 @@ type PasswordInputProps = {
   label?: string;
   value?: string;
   onChangeText?: (value: string) => void;
+  onBlur?: () => void;
   placeholder?: string;
   error?: string;
+  showLabel: string;
+  hideLabel: string;
 };
 
 export const PasswordInput = ({
   label,
   value,
   onChangeText,
+  onBlur,
   placeholder,
   error,
+  showLabel,
+  hideLabel,
 }: PasswordInputProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -24,6 +30,7 @@ export const PasswordInput = ({
       {label ? <Text style={styles.label}>{label}</Text> : null}
       <View style={[styles.inputRow, error ? styles.inputRowError : null]}>
         <TextInput
+          onBlur={onBlur}
           onChangeText={onChangeText}
           placeholder={placeholder}
           secureTextEntry={!isVisible}
@@ -31,7 +38,9 @@ export const PasswordInput = ({
           value={value}
         />
         <Pressable onPress={() => setIsVisible((prev) => !prev)}>
-          <Text style={styles.toggleText}>{isVisible ? 'HIDE' : 'SHOW'}</Text>
+          <Text style={styles.toggleText}>
+            {isVisible ? hideLabel : showLabel}
+          </Text>
         </Pressable>
       </View>
       {error ? <Text style={styles.error}>{error}</Text> : null}
