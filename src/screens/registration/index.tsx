@@ -46,6 +46,10 @@ export const RegistrationScreen = ({ navigation, route }: RegistrationScreenProp
     }
   };
 
+  const handleNavigateToProfile = useCallback(() => {
+    navigation.navigate(ROUTES.Profile);
+  }, [navigation]);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
@@ -59,6 +63,7 @@ export const RegistrationScreen = ({ navigation, route }: RegistrationScreenProp
             formStep={formStep}
             setFormStep={setFormStep}
             onRegisterBackHandler={handleRegisterBackHandler}
+            onNavigateToProfile={handleNavigateToProfile}
             initialPhone={route.params?.phone}
             initialCountryCode={route.params?.countryCode}
           />

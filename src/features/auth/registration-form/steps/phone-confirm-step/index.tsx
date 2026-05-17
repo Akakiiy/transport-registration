@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import type { RegistrationFormStep } from '../../lib/types';
 import { PhoneStage } from './components/phone-stage';
@@ -51,6 +51,22 @@ export const PhoneConfirmStep = ({
   const handleResendCodeSent = useCallback((nextResendAvailableAt: number) => {
     setResendAvailableAt(nextResendAvailableAt);
   }, []);
+
+  // Register back handler only for restored SMS stage
+  useEffect(() => {
+    if (isCodeStage && Boolean(initialResendAvailableAt)) {
+      registerBackHandler?.(handleBackToPhoneStage);
+    }
+
+    return () => {
+      registerBackHandler?.(null);
+    };
+  }, [
+    isCodeStage,
+    initialResendAvailableAt,
+    registerBackHandler,
+    handleBackToPhoneStage,
+  ]);
 
   const stageContent = isCodeStage ? (
     <SmsStage

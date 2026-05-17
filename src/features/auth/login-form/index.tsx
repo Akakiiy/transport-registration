@@ -41,7 +41,7 @@ export const LoginForm = ({ onRegisterPress }: LoginFormProps) => {
 
   const countryCode = watch('countryCode');
 
-  const onSubmit = handleSubmit(async (values) => {
+  const onSubmit = handleSubmit(async values => {
     try {
       setIsSubmitting(true);
       setSubmitError(null);
@@ -79,7 +79,7 @@ export const LoginForm = ({ onRegisterPress }: LoginFormProps) => {
             }
             label={t('login.phoneLabel')}
             onBlur={onBlur}
-            onChangeCountry={(nextCountryCode) => {
+            onChangeCountry={nextCountryCode => {
               setValue('countryCode', nextCountryCode, {
                 shouldTouch: true,
                 shouldValidate: true,
@@ -137,7 +137,9 @@ export const LoginForm = ({ onRegisterPress }: LoginFormProps) => {
           </>
         )}
       />
-      {submitError ? <Text style={styles.submitError}>{submitError}</Text> : null}
+      {submitError ? (
+        <Text style={styles.submitError}>{submitError}</Text>
+      ) : null}
       <AppButton
         disabled={!isValid || isSubmitting}
         loading={isSubmitting}

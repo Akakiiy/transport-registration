@@ -8,8 +8,18 @@ const countryCodeEnum = z.enum(
 );
 
 export const registrationFormSchema = z.object({
+  // Step 0 fields
   phone: z.string().min(1, 'errors.required'),
   countryCode: countryCodeEnum,
+  
+  // Step 1 fields (optional in main schema to not break earlier steps)
+  companyName: z.string().optional(),
+  lastName: z.string().optional(),
+  firstName: z.string().optional(),
+  email: z.string().optional(),
+  
+  // Step 2 field
+  password: z.string().optional(),
 }).refine(
   (data) => {
     try {
@@ -29,6 +39,14 @@ export const registrationFormSchema = z.object({
     path: ['phone'],
   },
 );
+
+// Step-level validation schemas
+export const userInfoStepSchema = z.object({
+  companyName: z.string().min(1, 'errors.required'),
+  lastName: z.string().min(1, 'errors.required'),
+  firstName: z.string().min(1, 'errors.required'),
+  email: z.string().min(1, 'errors.required').email('errors.invalidEmail'),
+});
 
 export const smsCodeSchema = z
   .string()

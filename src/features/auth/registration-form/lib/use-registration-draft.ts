@@ -73,6 +73,11 @@ export const useRegistrationDraft = ({
             methods.reset({
               phone: draft.phone || '',
               countryCode: draft.countryCode || DEFAULT_COUNTRY_CODE,
+              companyName: draft.companyName || '',
+              lastName: draft.lastName || '',
+              firstName: draft.firstName || '',
+              email: draft.email || '',
+              password: '', // Never restore password
             });
 
             // Restore formStep from either formStep or step field
@@ -115,6 +120,10 @@ export const useRegistrationDraft = ({
         formStep: currentStep,
         phone: values.phone,
         countryCode: values.countryCode,
+        companyName: values.companyName,
+        lastName: values.lastName,
+        firstName: values.firstName,
+        email: values.email,
         resendAvailableAt: params?.resendAvailableAt,
         updatedAt: Date.now(),
       });

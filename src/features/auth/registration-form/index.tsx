@@ -5,6 +5,9 @@ import { useTranslation } from 'react-i18next';
 import type { CountryCode } from 'libphonenumber-js';
 import { DEFAULT_COUNTRY_CODE } from '@shared/config';
 import { PhoneConfirmStep } from './steps/phone-confirm-step';
+import { UserInfoStep } from './steps/user-info-step';
+import { PasswordStep } from './steps/password-step';
+
 import { registrationFormSchema } from './lib/schema';
 import { useRegistrationDraft } from './lib/use-registration-draft';
 import type { RegistrationFormStep, RegistrationFormValues } from './lib/types';
@@ -14,6 +17,7 @@ type RegistrationFormProps = {
   formStep: RegistrationFormStep;
   setFormStep: (step: RegistrationFormStep) => void;
   onRegisterBackHandler?: (handler: (() => void) | null) => void;
+  onNavigateToProfile: () => void;
   initialPhone?: string;
   initialCountryCode?: CountryCode;
 };
@@ -22,6 +26,7 @@ export const RegistrationForm = ({
   formStep,
   setFormStep,
   onRegisterBackHandler,
+  onNavigateToProfile,
   initialPhone,
   initialCountryCode,
 }: RegistrationFormProps) => {
@@ -34,6 +39,11 @@ export const RegistrationForm = ({
     defaultValues: {
       phone: '',
       countryCode: DEFAULT_COUNTRY_CODE,
+      companyName: '',
+      lastName: '',
+      firstName: '',
+      email: '',
+      password: '',
     },
   });
 
@@ -59,19 +69,17 @@ export const RegistrationForm = ({
         );
       case 1:
         return (
-          <View style={styles.placeholderContainer}>
-            <Text style={styles.placeholderText}>
-              {t('registration.userInfoPlaceholder')}
-            </Text>
-          </View>
+          <UserInfoStep
+            onNext={() => setFormStep(2)}
+            saveRegistrationDraft={saveRegistrationDraft}
+          />
         );
       case 2:
         return (
-          <View style={styles.placeholderContainer}>
-            <Text style={styles.placeholderText}>
-              {t('registration.passwordPlaceholder')}
-            </Text>
-          </View>
+          <PasswordStep
+            onComplete={onNavigateToProfile}
+            saveRegistrationDraft={saveRegistrationDraft}
+          />
         );
       default:
         return null;

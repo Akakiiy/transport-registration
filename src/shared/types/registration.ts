@@ -28,6 +28,10 @@ export type RegistrationDraft = {
   phone?: string;
   countryCode?: CountryCode;
   resendAvailableAt?: number;
+  companyName?: string;
+  lastName?: string;
+  firstName?: string;
+  email?: string;
   updatedAt: number;
   role?: UserRole;
   form?: Partial<RegistrationData>;
