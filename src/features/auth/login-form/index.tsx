@@ -41,12 +41,11 @@ export const LoginForm = ({ onRegisterPress }: LoginFormProps) => {
 
   const countryCode = watch('countryCode');
 
-  const onSubmit = handleSubmit(async values => {
+  const onSubmit = handleSubmit(async () => {
     try {
       setIsSubmitting(true);
       setSubmitError(null);
       await wait(1000);
-      console.log('login submitted', values);
     } catch (error) {
       console.warn('[LoginForm] Failed to submit login form', error);
       setSubmitError(t('login.genericError'));

@@ -86,31 +86,64 @@ export const registrationDetailsStepSchema = z.object({
     message: 'errors.invalidIin',
     path: ['iin'],
   },
-).refine(
-  (data) => {
-    if (!data.birthDate) {
-      return true;
-    }
-    try {
-      const birthDateObj = new Date(data.birthDate);
-      const now = new Date();
-      if (birthDateObj > now) {
-        return false;
-      }
-      const age = now.getFullYear() - birthDateObj.getFullYear();
-      const monthDiff = now.getMonth() - birthDateObj.getMonth();
-      const dayDiff = now.getDate() - birthDateObj.getDate();
-      const actualAge = monthDiff < 0 || (monthDiff === 0 && dayDiff < 0) ? age - 1 : age;
-      return actualAge >= 18 && actualAge < 65;
-    } catch {
-      return false;
-    }
-  },
-  {
-    message: 'errors.ageRestriction',
-    path: ['birthDate'],
-  },
-).refine(
+).superRefine((data, ctx) => {
+  if (!data.birthDate) {
+    return;
+  }
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(data.birthDate)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'errors.invalidBirthDate',
+      path: ['birthDate'],
+    });
+    return;
+  }
+
+  const [yearString, monthString, dayString] = data.birthDate.split('-');
+  const year = Number(yearString);
+  const month = Number(monthString);
+  const day = Number(dayString);
+  const birthDateObj = new Date(year, month - 1, day);
+
+  const isInvalidDate =
+    birthDateObj.getFullYear() !== year ||
+    birthDateObj.getMonth() !== month - 1 ||
+    birthDateObj.getDate() !== day;
+
+  if (isInvalidDate) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'errors.invalidBirthDate',
+      path: ['birthDate'],
+    });
+    return;
+  }
+
+  const now = new Date();
+  if (birthDateObj > now) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'errors.invalidBirthDate',
+      path: ['birthDate'],
+    });
+    return;
+  }
+
+  const age = now.getFullYear() - birthDateObj.getFullYear();
+  const monthDiff = now.getMonth() - birthDateObj.getMonth();
+  const dayDiff = now.getDate() - birthDateObj.getDate();
+  const actualAge =
+    monthDiff < 0 || (monthDiff === 0 && dayDiff < 0) ? age - 1 : age;
+
+  if (actualAge < 18 || actualAge >= 65) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'errors.ageRestriction',
+      path: ['birthDate'],
+    });
+  }
+}).refine(
   (data) => {
     if (data.role === 'carrier') {
       return !!data.driverLicenseNumber && !!data.driverLicenseCategory && !!data.driverLicenseIssueDate;
@@ -122,14 +155,6 @@ export const registrationDetailsStepSchema = z.object({
     path: ['driverLicenseNumber'],
   },
 );
-
-// Backward compatibility
-export const userInfoStepSchema = z.object({
-  companyName: z.string().min(1, 'errors.required'),
-  lastName: z.string().min(1, 'errors.required'),
-  firstName: z.string().min(1, 'errors.required'),
-  email: z.string().min(1, 'errors.required').email('errors.invalidEmail'),
-});
 
 export const smsCodeSchema = z
   .string()

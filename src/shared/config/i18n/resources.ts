@@ -1,15 +1,6 @@
 export const resources = {
   ru: {
     translation: {
-      phoneInput: {
-        title: 'Ввод телефона',
-      },
-      roleSelect: {
-        title: 'Выбор роли',
-      },
-      smsConfirm: {
-        title: 'Подтверждение SMS',
-      },
       registration: {
         title: 'Регистрация',
         phoneConfirmTitle: 'Подтверждение номера телефона',
@@ -21,8 +12,6 @@ export const resources = {
         codeLabel: 'Код из SMS',
         close: 'Закрыть',
         back: 'Назад',
-        userInfoTitle: 'Данные пользователя',
-        userInfoDescription: 'Заполните Ваши личные данные',
         companyNameLabel: 'Наименование компании',
         lastNameLabel: 'Фамилия',
         firstNameLabel: 'Имя',
@@ -63,7 +52,6 @@ export const resources = {
         driverLicenseCategoryLabel: 'Категория',
         driverLicenseIssueDateLabel: 'Дата выдачи ВУ',
         datePlaceholder: 'ГГГГ-ММ-ДД',
-        selectPlaceholder: 'Выберите значение',
         citizenshipPlaceholder: 'Выберите гражданство',
         driverLicenseCategoryPlaceholder: 'Выберите категорию',
         citizenshipKazakhstan: 'Казахстан',
@@ -117,7 +105,7 @@ export const resources = {
         description:
           'Для входа в личный кабинет введите свой номер телефона, на него будет отправлено SMS с проверочным кодом',
         phoneLabel: 'Номер телефона',
-        phonePlaceholder: 'Phone number',
+        phonePlaceholder: 'Номер телефона',
         passwordLabel: 'Пароль',
         passwordPlaceholder: 'Введите пароль',
         policyPrefix: 'Согласен с',
@@ -147,7 +135,7 @@ export const resources = {
         invalidSmsCode: 'Код не верный, либо истек',
         invalidIin: 'Неверный ИИН',
         required: 'Поле обязательно',
-        invalidDate: 'Некорректная дата',
+        invalidBirthDate: 'Некорректная дата рождения',
         ageRestriction: 'Возраст должен быть от 18 до 64 лет',
         invalidPhone: 'Введите корректный номер телефона',
         invalidEmail: 'Введите корректный email',
@@ -166,15 +154,6 @@ export const resources = {
   },
   en: {
     translation: {
-      phoneInput: {
-        title: 'Phone Input',
-      },
-      roleSelect: {
-        title: 'Role Select',
-      },
-      smsConfirm: {
-        title: 'SMS Confirm',
-      },
       registration: {
         title: 'Registration',
         phoneConfirmTitle: 'Phone Number Confirmation',
@@ -186,8 +165,6 @@ export const resources = {
         codeLabel: 'SMS Code',
         close: 'Close',
         back: 'Back',
-        userInfoTitle: 'User Information',
-        userInfoDescription: 'Fill in your personal details',
         companyNameLabel: 'Company Name',
         lastNameLabel: 'Last Name',
         firstNameLabel: 'First Name',
@@ -228,7 +205,6 @@ export const resources = {
         driverLicenseCategoryLabel: 'Category',
         driverLicenseIssueDateLabel: 'Driver License Issue Date',
         datePlaceholder: 'YYYY-MM-DD',
-        selectPlaceholder: 'Select value',
         citizenshipPlaceholder: 'Select citizenship',
         driverLicenseCategoryPlaceholder: 'Select category',
         citizenshipKazakhstan: 'Kazakhstan',
@@ -312,7 +288,7 @@ export const resources = {
         invalidSmsCode: 'Code is incorrect or expired',
         invalidIin: 'Invalid IIN',
         required: 'Required field',
-        invalidDate: 'Invalid date',
+        invalidBirthDate: 'Invalid birth date',
         ageRestriction: 'Age must be between 18 and 64',
         invalidPhone: 'Enter a valid phone number',
         invalidEmail: 'Enter a valid email',

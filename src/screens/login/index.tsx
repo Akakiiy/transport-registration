@@ -35,7 +35,7 @@ export const LoginScreen = ({ navigation }: LoginScreenProps) => {
           />
         </View>
         <View style={styles.footer}>
-          <Pressable onPress={() => console.log('forgot password pressed')}>
+          <Pressable onPress={() => {}}>
             <Text style={styles.forgotLink}>{t('login.forgotPassword')}</Text>
           </Pressable>
           <Text style={styles.footerText}>{t('login.questions')}</Text>

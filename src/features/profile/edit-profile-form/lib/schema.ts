@@ -30,62 +30,86 @@ export const createEditProfileFormSchema = (isCarrier: boolean) =>
         path: ['iin'],
       },
     )
-    .refine(
-      data => {
-        if (!data.birthDate) {
-          return true;
-        }
-
+    .superRefine((data, ctx) => {
+      if (data.birthDate) {
         if (!/^\d{4}-\d{2}-\d{2}$/.test(data.birthDate)) {
-          return false;
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'errors.invalidBirthDate',
+            path: ['birthDate'],
+          });
+        } else {
+          const [yearString, monthString, dayString] = data.birthDate.split('-');
+          const year = Number(yearString);
+          const month = Number(monthString);
+          const day = Number(dayString);
+
+          const birthDateObj = new Date(year, month - 1, day);
+          const isInvalidDate =
+            birthDateObj.getFullYear() !== year ||
+            birthDateObj.getMonth() !== month - 1 ||
+            birthDateObj.getDate() !== day;
+
+          if (isInvalidDate) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'errors.invalidBirthDate',
+              path: ['birthDate'],
+            });
+          } else {
+            const now = new Date();
+            if (birthDateObj > now) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'errors.invalidBirthDate',
+                path: ['birthDate'],
+              });
+            } else {
+              const age = now.getFullYear() - birthDateObj.getFullYear();
+              const monthDiff = now.getMonth() - birthDateObj.getMonth();
+              const dayDiff = now.getDate() - birthDateObj.getDate();
+              const actualAge =
+                monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)
+                  ? age - 1
+                  : age;
+
+              if (actualAge < 18 || actualAge >= 65) {
+                ctx.addIssue({
+                  code: z.ZodIssueCode.custom,
+                  message: 'errors.ageRestriction',
+                  path: ['birthDate'],
+                });
+              }
+            }
+          }
         }
+      }
 
-        const [yearString, monthString, dayString] = data.birthDate.split('-');
-        const year = Number(yearString);
-        const month = Number(monthString);
-        const day = Number(dayString);
+      if (!isCarrier) {
+        return;
+      }
 
-        const birthDateObj = new Date(year, month - 1, day);
-        if (
-          birthDateObj.getFullYear() !== year ||
-          birthDateObj.getMonth() !== month - 1 ||
-          birthDateObj.getDate() !== day
-        ) {
-          return false;
-        }
+      if (!data.driverLicenseNumber) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'errors.required',
+          path: ['driverLicenseNumber'],
+        });
+      }
 
-        const now = new Date();
-        if (birthDateObj > now) {
-          return false;
-        }
+      if (!data.driverLicenseCategory) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'errors.required',
+          path: ['driverLicenseCategory'],
+        });
+      }
 
-        const age = now.getFullYear() - birthDateObj.getFullYear();
-        const monthDiff = now.getMonth() - birthDateObj.getMonth();
-        const dayDiff = now.getDate() - birthDateObj.getDate();
-        const actualAge =
-          monthDiff < 0 || (monthDiff === 0 && dayDiff < 0) ? age - 1 : age;
-
-        return actualAge >= 18 && actualAge < 65;
-      },
-      {
-        message: 'errors.ageRestriction',
-        path: ['birthDate'],
-      },
-    )
-    .refine(
-      data => {
-        if (!isCarrier) {
-          return true;
-        }
-
-        return (
-          Boolean(data.driverLicenseNumber) &&
-          Boolean(data.driverLicenseCategory) &&
-          Boolean(data.driverLicenseIssueDate)
-        );
-      },
-      {
-        message: 'errors.required',
-        path: ['driverLicenseNumber'],
-      },
-    );
+      if (!data.driverLicenseIssueDate) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'errors.required',
+          path: ['driverLicenseIssueDate'],
+        });
+      }
+    });
