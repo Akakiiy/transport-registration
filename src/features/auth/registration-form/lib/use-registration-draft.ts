@@ -25,17 +25,20 @@ type UseRegistrationDraftReturn = {
 
 const stepMap: Record<string, RegistrationFormStep> = {
   'phone-confirmation': 0,
-  'user-info': 1,
-  password: 2,
+  'role-selection': 1,
+  'user-info': 2, // Backward compatibility
+  'registration-details': 2,
+  password: 3,
 };
 
 const stepNameMap: Record<
   RegistrationFormStep,
-  'phone-confirmation' | 'user-info' | 'password'
+  'phone-confirmation' | 'role-selection' | 'registration-details' | 'password'
 > = {
   0: 'phone-confirmation',
-  1: 'user-info',
-  2: 'password',
+  1: 'role-selection',
+  2: 'registration-details',
+  3: 'password',
 };
 
 export const useRegistrationDraft = ({
@@ -73,10 +76,20 @@ export const useRegistrationDraft = ({
             methods.reset({
               phone: draft.phone || '',
               countryCode: draft.countryCode || DEFAULT_COUNTRY_CODE,
+              role: draft.role,
               companyName: draft.companyName || '',
-              lastName: draft.lastName || '',
               firstName: draft.firstName || '',
+              lastName: draft.lastName || '',
               email: draft.email || '',
+              birthDate: draft.birthDate || '',
+              citizenship: draft.citizenship || '',
+              iin: draft.iin || '',
+              documentNumber: draft.documentNumber || '',
+              documentIssueDate: draft.documentIssueDate || '',
+              documentIssuer: draft.documentIssuer || '',
+              driverLicenseNumber: draft.driverLicenseNumber || '',
+              driverLicenseCategory: draft.driverLicenseCategory || '',
+              driverLicenseIssueDate: draft.driverLicenseIssueDate || '',
               password: '', // Never restore password
             });
 
@@ -116,14 +129,24 @@ export const useRegistrationDraft = ({
       const stepName = stepNameMap[currentStep];
 
       await saveDraft({
-        step: stepName as 'phone-confirmation' | 'user-info' | 'password',
+        step: stepName,
         formStep: currentStep,
         phone: values.phone,
         countryCode: values.countryCode,
+        role: values.role,
         companyName: values.companyName,
-        lastName: values.lastName,
         firstName: values.firstName,
+        lastName: values.lastName,
         email: values.email,
+        birthDate: values.birthDate,
+        citizenship: values.citizenship,
+        iin: values.iin,
+        documentNumber: values.documentNumber,
+        documentIssueDate: values.documentIssueDate,
+        documentIssuer: values.documentIssuer,
+        driverLicenseNumber: values.driverLicenseNumber,
+        driverLicenseCategory: values.driverLicenseCategory,
+        driverLicenseIssueDate: values.driverLicenseIssueDate,
         resendAvailableAt: params?.resendAvailableAt,
         updatedAt: Date.now(),
       });

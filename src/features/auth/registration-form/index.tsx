@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next';
 import type { CountryCode } from 'libphonenumber-js';
 import { DEFAULT_COUNTRY_CODE } from '@shared/config';
 import { PhoneConfirmStep } from './steps/phone-confirm-step';
-import { UserInfoStep } from './steps/user-info-step';
+import { RoleSelectStep } from './steps/role-select-step';
+import { RegistrationDetailsStep } from './steps/registration-details-step';
 import { PasswordStep } from './steps/password-step';
 
 import { registrationFormSchema } from './lib/schema';
@@ -39,10 +40,20 @@ export const RegistrationForm = ({
     defaultValues: {
       phone: '',
       countryCode: DEFAULT_COUNTRY_CODE,
+      role: undefined,
       companyName: '',
-      lastName: '',
       firstName: '',
+      lastName: '',
       email: '',
+      birthDate: '',
+      citizenship: '',
+      iin: '',
+      documentNumber: '',
+      documentIssueDate: '',
+      documentIssuer: '',
+      driverLicenseNumber: '',
+      driverLicenseCategory: '',
+      driverLicenseIssueDate: '',
       password: '',
     },
   });
@@ -69,12 +80,19 @@ export const RegistrationForm = ({
         );
       case 1:
         return (
-          <UserInfoStep
+          <RoleSelectStep
             onNext={() => setFormStep(2)}
             saveRegistrationDraft={saveRegistrationDraft}
           />
         );
       case 2:
+        return (
+          <RegistrationDetailsStep
+            onNext={() => setFormStep(3)}
+            saveRegistrationDraft={saveRegistrationDraft}
+          />
+        );
+      case 3:
         return (
           <PasswordStep onComplete={onNavigateToProfile} />
         );

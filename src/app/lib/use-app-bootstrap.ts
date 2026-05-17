@@ -6,7 +6,9 @@ import type { RootStackParamList } from '../navigation/types';
 
 const REGISTRATION_STEPS = [
   'phone-confirmation',
-  'user-info',
+  'role-selection',
+  'registration-details',
+  'user-info', // Backward compatibility
   'password',
 ] as const;
 
@@ -21,13 +23,13 @@ const isValidRegistrationDraft = (
   if (
     typeof draft.formStep === 'number' &&
     draft.formStep >= 0 &&
-    draft.formStep <= 2
+    draft.formStep <= 3
   ) {
     return true;
   }
 
   // Check by step string (backward compatibility)
-  return REGISTRATION_STEPS.includes(draft.step);
+  return REGISTRATION_STEPS.includes(draft.step as typeof REGISTRATION_STEPS[number]);
 };
 
 type UseAppBootstrapReturn = {

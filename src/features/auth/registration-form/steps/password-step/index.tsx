@@ -62,23 +62,26 @@ export const PasswordStep = ({
         .join(' ')
         .trim();
 
-      // Build minimal UserProfile with available data
+      // Build UserProfile with all collected data
       const profile: UserProfile = {
         phone: formValues.phone,
-        role: 'customer',
+        role: formValues.role || 'customer', // Fallback for legacy safety
         data: {
           fullName: fullName || 'User',
-          birthDate: '',
-          citizenship: '',
+          birthDate: formValues.birthDate || '',
+          citizenship: formValues.citizenship || '',
           phone: formValues.phone,
-          iin: '',
-          documentNumber: '',
-          documentIssueDate: '',
-          documentIssuer: '',
+          iin: formValues.iin || '',
+          documentNumber: formValues.documentNumber || '',
+          documentIssueDate: formValues.documentIssueDate || '',
+          documentIssuer: formValues.documentIssuer || '',
           companyName: formValues.companyName,
           email: formValues.email,
           firstName: formValues.firstName,
           lastName: formValues.lastName,
+          driverLicenseNumber: formValues.driverLicenseNumber,
+          driverLicenseCategory: formValues.driverLicenseCategory,
+          driverLicenseIssueDate: formValues.driverLicenseIssueDate,
         },
       };
 
