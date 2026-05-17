@@ -32,6 +32,16 @@ export const RoleSelectStep = ({
   const handleRoleSelect = useCallback((role: 'customer' | 'carrier') => {
     setValue('role', role, { shouldValidate: true, shouldDirty: true });
     clearErrors('role');
+    
+    // If customer selected, clear driver license fields to prevent stale data
+    if (role === 'customer') {
+      setValue('driverLicenseNumber', '');
+      setValue('driverLicenseCategory', '');
+      setValue('driverLicenseIssueDate', '');
+      clearErrors('driverLicenseNumber');
+      clearErrors('driverLicenseCategory');
+      clearErrors('driverLicenseIssueDate');
+    }
   }, [setValue, clearErrors]);
 
   const handleContinue = useCallback(async () => {

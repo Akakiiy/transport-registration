@@ -5,6 +5,15 @@ export type EditProfileFormValues = {
   firstName: string;
   lastName: string;
   email: string;
+  birthDate: string;
+  citizenship: string;
+  iin: string;
+  documentNumber: string;
+  documentIssueDate: string;
+  documentIssuer: string;
+  driverLicenseNumber: string;
+  driverLicenseCategory: string;
+  driverLicenseIssueDate: string;
 };
 
 export type EditProfileFormProps = {

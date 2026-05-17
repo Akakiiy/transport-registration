@@ -63,9 +63,12 @@ export const PasswordStep = ({
         .trim();
 
       // Build UserProfile with all collected data
+      const role = formValues.role || 'customer'; // Fallback for legacy safety
+      const isCarrier = role === 'carrier';
+
       const profile: UserProfile = {
         phone: formValues.phone,
-        role: formValues.role || 'customer', // Fallback for legacy safety
+        role,
         data: {
           fullName: fullName || 'User',
           birthDate: formValues.birthDate || '',
@@ -79,9 +82,12 @@ export const PasswordStep = ({
           email: formValues.email,
           firstName: formValues.firstName,
           lastName: formValues.lastName,
-          driverLicenseNumber: formValues.driverLicenseNumber,
-          driverLicenseCategory: formValues.driverLicenseCategory,
-          driverLicenseIssueDate: formValues.driverLicenseIssueDate,
+          // Only include driver fields for carriers
+          ...(isCarrier && {
+            driverLicenseNumber: formValues.driverLicenseNumber,
+            driverLicenseCategory: formValues.driverLicenseCategory,
+            driverLicenseIssueDate: formValues.driverLicenseIssueDate,
+          }),
         },
       };
 
@@ -90,8 +96,6 @@ export const PasswordStep = ({
 
       // Clear draft after successful profile save
       await clearDraft();
-
-      console.log('[DEV] Registration completed');
 
       onComplete();
     } catch (error: unknown) {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import type { CountryCode } from 'libphonenumber-js';
 import { clearDraft, getDraft, saveDraft } from '@shared/lib/storage';
@@ -41,6 +41,37 @@ const stepNameMap: Record<
   3: 'password',
 };
 
+const normalizeRegistrationDraftValues = (
+  values: Record<string, unknown>,
+  resendAvailableAt?: number,
+) => {
+  const role = values.role as 'customer' | 'carrier' | undefined;
+
+  // If not carrier, clear driver fields to prevent stale data
+  const isCarrier = role === 'carrier';
+
+  return {
+    phone: values.phone as string | undefined,
+    countryCode: values.countryCode as CountryCode | undefined,
+    role,
+    companyName: values.companyName as string | undefined,
+    firstName: values.firstName as string | undefined,
+    lastName: values.lastName as string | undefined,
+    email: values.email as string | undefined,
+    birthDate: values.birthDate as string | undefined,
+    citizenship: values.citizenship as string | undefined,
+    iin: values.iin as string | undefined,
+    documentNumber: values.documentNumber as string | undefined,
+    documentIssueDate: values.documentIssueDate as string | undefined,
+    documentIssuer: values.documentIssuer as string | undefined,
+    driverLicenseNumber: isCarrier ? (values.driverLicenseNumber as string | undefined) : undefined,
+    driverLicenseCategory: isCarrier ? (values.driverLicenseCategory as string | undefined) : undefined,
+    driverLicenseIssueDate: isCarrier ? (values.driverLicenseIssueDate as string | undefined) : undefined,
+    resendAvailableAt,
+    // NEVER include: password, confirmPassword, smsCode
+  };
+};
+
 export const useRegistrationDraft = ({
   methods,
   formStep,
@@ -52,6 +83,8 @@ export const useRegistrationDraft = ({
   const [restoredResendAvailableAt, setRestoredResendAvailableAt] = useState<
     number | undefined
   >();
+  const [autosaveEnabled, setAutosaveEnabled] = useState(false);
+  const autosaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Restore draft on mount
   useEffect(() => {
@@ -59,7 +92,7 @@ export const useRegistrationDraft = ({
       try {
         // Priority: route params > draft > defaults
         const hasRouteParams = initialPhone !== undefined || initialCountryCode !== undefined;
-        
+
         if (hasRouteParams) {
           // Fresh registration from Login - use route params
           methods.reset({
@@ -119,6 +152,63 @@ export const useRegistrationDraft = ({
     restore();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Autosave non-sensitive form values with debouncing
+  useEffect(() => {
+    if (isRestoring) {
+      return; // Don't autosave during restore
+    }
+
+    // Enable autosave after a small delay to avoid saving during initial render
+    const enableTimer = setTimeout(() => {
+      setAutosaveEnabled(true);
+    }, 1000);
+
+    return () => clearTimeout(enableTimer);
+  }, [isRestoring]);
+
+  useEffect(() => {
+    if (!autosaveEnabled || isRestoring) {
+      return; // Skip if not ready or restoring
+    }
+
+    const subscription = methods.watch((values) => {
+      if (autosaveTimeoutRef.current) {
+        clearTimeout(autosaveTimeoutRef.current);
+      }
+
+      // Debounced autosave
+      autosaveTimeoutRef.current = setTimeout(async () => {
+        try {
+          const stepName = stepNameMap[formStep];
+          const normalizedValues = normalizeRegistrationDraftValues(
+            values as Record<string, unknown>,
+            restoredResendAvailableAt,
+          );
+
+          await saveDraft({
+            step: stepName,
+            formStep,
+            ...normalizedValues,
+            updatedAt: Date.now(),
+          });
+        } catch (error: unknown) {
+          // Silently fail autosave, user can still manually save
+          console.warn('[useRegistrationDraft] Autosave failed', error);
+        } finally {
+          autosaveTimeoutRef.current = null;
+        }
+      }, 800); // 800ms debounce
+    });
+
+    return () => {
+      subscription.unsubscribe();
+      if (autosaveTimeoutRef.current) {
+        clearTimeout(autosaveTimeoutRef.current);
+        autosaveTimeoutRef.current = null;
+      }
+    };
+  }, [autosaveEnabled, isRestoring, formStep, methods, restoredResendAvailableAt]);
+
   const saveRegistrationDraft = async (params?: {
     resendAvailableAt?: number;
     step?: RegistrationFormStep;
@@ -128,26 +218,15 @@ export const useRegistrationDraft = ({
       const currentStep = params?.step ?? formStep;
       const stepName = stepNameMap[currentStep];
 
+      const normalizedValues = normalizeRegistrationDraftValues(
+        values,
+        params?.resendAvailableAt,
+      );
+
       await saveDraft({
         step: stepName,
         formStep: currentStep,
-        phone: values.phone,
-        countryCode: values.countryCode,
-        role: values.role,
-        companyName: values.companyName,
-        firstName: values.firstName,
-        lastName: values.lastName,
-        email: values.email,
-        birthDate: values.birthDate,
-        citizenship: values.citizenship,
-        iin: values.iin,
-        documentNumber: values.documentNumber,
-        documentIssueDate: values.documentIssueDate,
-        documentIssuer: values.documentIssuer,
-        driverLicenseNumber: values.driverLicenseNumber,
-        driverLicenseCategory: values.driverLicenseCategory,
-        driverLicenseIssueDate: values.driverLicenseIssueDate,
-        resendAvailableAt: params?.resendAvailableAt,
+        ...normalizedValues,
         updatedAt: Date.now(),
       });
     } catch (error: unknown) {

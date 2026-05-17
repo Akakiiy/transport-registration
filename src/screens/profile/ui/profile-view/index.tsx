@@ -14,39 +14,58 @@ export const ProfileView = ({ profile, onEdit, onLogout }: ProfileViewProps) => 
   const { t } = useTranslation();
   const roleText =
     profile.role === 'customer' ? t('profile.customer') : t('profile.carrier');
+  const isCarrier = profile.role === 'carrier';
+
+  const renderField = (label: string, value?: string) => {
+    if (!value) {
+      return null;
+    }
+
+    return (
+      <View style={styles.field}>
+        <Text style={styles.label}>{label}</Text>
+        <Text style={styles.value}>{value}</Text>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.content}>
       <View style={styles.fieldsContainer}>
-        <View style={styles.field}>
-          <Text style={styles.label}>{t('profile.phone')}</Text>
-          <Text style={styles.value}>{profile.phone}</Text>
-        </View>
+        {renderField(t('profile.phone'), profile.phone)}
+        {renderField(t('profile.role'), roleText)}
 
-        <View style={styles.field}>
-          <Text style={styles.label}>{t('profile.role')}</Text>
-          <Text style={styles.value}>{roleText}</Text>
-        </View>
+        <Text style={styles.sectionTitle}>{t('profile.personalInfo')}</Text>
+        {renderField(t('profile.company'), profile.data.companyName)}
+        {renderField(t('profile.fullName'), profile.data.fullName)}
+        {renderField(t('profile.firstName'), profile.data.firstName)}
+        {renderField(t('profile.lastName'), profile.data.lastName)}
+        {renderField(t('profile.email'), profile.data.email)}
+        {renderField(t('profile.birthDate'), profile.data.birthDate)}
+        {renderField(t('profile.citizenship'), profile.data.citizenship)}
+        {renderField(t('profile.iin'), profile.data.iin)}
 
-        {profile.data.companyName ? (
-          <View style={styles.field}>
-            <Text style={styles.label}>{t('profile.company')}</Text>
-            <Text style={styles.value}>{profile.data.companyName}</Text>
-          </View>
-        ) : null}
+        <Text style={styles.sectionTitle}>{t('profile.documentInfo')}</Text>
+        {renderField(t('profile.documentNumber'), profile.data.documentNumber)}
+        {renderField(t('profile.documentIssueDate'), profile.data.documentIssueDate)}
+        {renderField(t('profile.documentIssuer'), profile.data.documentIssuer)}
 
-        {profile.data.fullName ? (
-          <View style={styles.field}>
-            <Text style={styles.label}>{t('profile.fullName')}</Text>
-            <Text style={styles.value}>{profile.data.fullName}</Text>
-          </View>
-        ) : null}
-
-        {profile.data.email ? (
-          <View style={styles.field}>
-            <Text style={styles.label}>{t('profile.email')}</Text>
-            <Text style={styles.value}>{profile.data.email}</Text>
-          </View>
+        {isCarrier ? (
+          <>
+            <Text style={styles.sectionTitle}>{t('profile.driverLicenseInfo')}</Text>
+            {renderField(
+              t('profile.driverLicenseNumber'),
+              profile.data.driverLicenseNumber,
+            )}
+            {renderField(
+              t('profile.driverLicenseCategory'),
+              profile.data.driverLicenseCategory,
+            )}
+            {renderField(
+              t('profile.driverLicenseIssueDate'),
+              profile.data.driverLicenseIssueDate,
+            )}
+          </>
         ) : null}
       </View>
 

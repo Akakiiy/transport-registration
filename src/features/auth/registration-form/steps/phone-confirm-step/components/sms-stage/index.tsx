@@ -96,8 +96,6 @@ export const SmsStage = ({
         step: 0,
       });
 
-      console.log('📱 [DEV] SMS verification code: 1111');
-
       onResendCodeSent(nextResendAvailableAt);
     } catch (error: unknown) {
       console.warn('[SmsStage] Failed to resend code', error);

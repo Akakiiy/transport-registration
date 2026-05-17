@@ -8,6 +8,12 @@ export const styles = StyleSheet.create({
   fieldsContainer: {
     gap: 16,
   },
+  sectionTitle: {
+    color: '#1f2937',
+    fontSize: 16,
+    fontWeight: '700',
+    marginTop: 8,
+  },
   field: {
     backgroundColor: '#f9fafb',
     borderColor: '#e5e7eb',

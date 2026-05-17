@@ -63,8 +63,6 @@ export const PhoneStage = ({
         step: 0,
       });
 
-      console.log('📱 [DEV] SMS verification code: 1111');
-
       onCodeSent(nextResendAvailableAt);
     } catch (error: unknown) {
       console.warn('[PhoneStage] Failed to send phone code', error);
