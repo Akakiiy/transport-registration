@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import type { CountryCode } from 'libphonenumber-js';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { wait } from '@shared/lib';
@@ -10,7 +11,11 @@ import { loginFormSchema } from './lib/schema';
 import type { LoginFormValues } from './lib/types';
 import { styles } from './styles';
 
-export const LoginForm = () => {
+type LoginFormProps = {
+  onRegisterPress?: (data: { phone: string; countryCode: CountryCode }) => void;
+};
+
+export const LoginForm = ({ onRegisterPress }: LoginFormProps) => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -18,6 +23,7 @@ export const LoginForm = () => {
   const {
     control,
     formState: { isValid },
+    getValues,
     handleSubmit,
     setValue,
     watch,
@@ -48,6 +54,14 @@ export const LoginForm = () => {
       setIsSubmitting(false);
     }
   });
+
+  const handleRegisterPress = () => {
+    const values = getValues();
+    onRegisterPress?.({
+      phone: values.phone,
+      countryCode: values.countryCode,
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -130,6 +144,12 @@ export const LoginForm = () => {
         onPress={onSubmit}
         title={t('login.submit')}
       />
+      <View style={styles.linksRow}>
+        <Text style={styles.noAccountText}>{t('login.noAccount')}</Text>
+        <Pressable onPress={handleRegisterPress}>
+          <Text style={styles.registerLink}>{t('login.register')}</Text>
+        </Pressable>
+      </View>
     </View>
   );
 };

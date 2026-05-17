@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
+import type { CountryCode } from 'libphonenumber-js';
 import { clearDraft, getDraft, saveDraft } from '@shared/lib/storage';
 import { DEFAULT_COUNTRY_CODE } from '@shared/config';
 import type { RegistrationFormStep, RegistrationFormValues } from './types';
@@ -8,6 +9,8 @@ type UseRegistrationDraftParams = {
   methods: UseFormReturn<RegistrationFormValues>;
   formStep: RegistrationFormStep;
   setFormStep: (step: RegistrationFormStep) => void;
+  initialPhone?: string;
+  initialCountryCode?: CountryCode;
 };
 
 type UseRegistrationDraftReturn = {
@@ -39,6 +42,8 @@ export const useRegistrationDraft = ({
   methods,
   formStep,
   setFormStep,
+  initialPhone,
+  initialCountryCode,
 }: UseRegistrationDraftParams): UseRegistrationDraftReturn => {
   const [isRestoring, setIsRestoring] = useState(true);
   const [restoredResendAvailableAt, setRestoredResendAvailableAt] = useState<
@@ -49,27 +54,42 @@ export const useRegistrationDraft = ({
   useEffect(() => {
     const restore = async () => {
       try {
-        const draft = await getDraft();
-        if (draft) {
-          // Restore form values
+        // Priority: route params > draft > defaults
+        const hasRouteParams = initialPhone !== undefined || initialCountryCode !== undefined;
+        
+        if (hasRouteParams) {
+          // Fresh registration from Login - use route params
           methods.reset({
-            phone: draft.phone || '',
-            countryCode: draft.countryCode || DEFAULT_COUNTRY_CODE,
+            phone: initialPhone || '',
+            countryCode: initialCountryCode || DEFAULT_COUNTRY_CODE,
           });
+          // Start at step 0, no timer restoration
+          setFormStep(0);
+        } else {
+          // No route params - try to restore draft
+          const draft = await getDraft();
+          if (draft) {
+            // Restore form values
+            methods.reset({
+              phone: draft.phone || '',
+              countryCode: draft.countryCode || DEFAULT_COUNTRY_CODE,
+            });
 
-          // Restore formStep from either formStep or step field
-          const restoredStep =
-            typeof draft.formStep === 'number'
-              ? draft.formStep
-              : draft.step
-              ? stepMap[draft.step] ?? 0
-              : 0;
-          setFormStep(restoredStep as RegistrationFormStep);
+            // Restore formStep from either formStep or step field
+            const restoredStep =
+              typeof draft.formStep === 'number'
+                ? draft.formStep
+                : draft.step
+                ? stepMap[draft.step] ?? 0
+                : 0;
+            setFormStep(restoredStep as RegistrationFormStep);
 
-          // Restore resendAvailableAt
-          if (draft.resendAvailableAt) {
-            setRestoredResendAvailableAt(draft.resendAvailableAt);
+            // Restore resendAvailableAt
+            if (draft.resendAvailableAt) {
+              setRestoredResendAvailableAt(draft.resendAvailableAt);
+            }
           }
+          // If no draft, defaults from useForm will be used
         }
       } catch (error: unknown) {
         console.warn('[useRegistrationDraft] Failed to restore draft', error);

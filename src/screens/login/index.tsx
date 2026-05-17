@@ -1,4 +1,4 @@
-import { ScrollView, Text, Pressable, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -25,13 +25,14 @@ export const LoginScreen = ({ navigation }: LoginScreenProps) => {
         <Text style={styles.description}>{t('login.description')}</Text>
         <View style={styles.divider} />
         <View style={styles.form}>
-          <LoginForm />
-        </View>
-        <View style={styles.linksRow}>
-          <Text style={styles.noAccountText}>{t('login.noAccount')}</Text>
-          <Pressable onPress={() => navigation.navigate(ROUTES.Registration)}>
-            <Text style={styles.registerLink}>{t('login.register')}</Text>
-          </Pressable>
+          <LoginForm
+            onRegisterPress={({ phone, countryCode }) =>
+              navigation.navigate(ROUTES.Registration, {
+                phone,
+                countryCode,
+              })
+            }
+          />
         </View>
         <View style={styles.footer}>
           <Pressable onPress={() => console.log('forgot password pressed')}>

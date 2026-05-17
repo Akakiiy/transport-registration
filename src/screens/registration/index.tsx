@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -16,11 +16,15 @@ type RegistrationScreenProps = NativeStackScreenProps<
   'Registration'
 >;
 
-export const RegistrationScreen = ({ navigation }: RegistrationScreenProps) => {
+export const RegistrationScreen = ({ navigation, route }: RegistrationScreenProps) => {
   const [formStep, setFormStep] = useState<RegistrationFormStep>(0);
   const [formBackHandler, setFormBackHandler] = useState<(() => void) | null>(
     null,
   );
+
+  const handleRegisterBackHandler = useCallback((handler: (() => void) | null) => {
+    setFormBackHandler(() => handler);
+  }, []);
 
   const handleBack = () => {
     if (formStep > 0) {
@@ -51,7 +55,9 @@ export const RegistrationScreen = ({ navigation }: RegistrationScreenProps) => {
           <RegistrationForm
             formStep={formStep}
             setFormStep={setFormStep}
-            onRegisterBackHandler={setFormBackHandler}
+            onRegisterBackHandler={handleRegisterBackHandler}
+            initialPhone={route.params?.phone}
+            initialCountryCode={route.params?.countryCode}
           />
         </View>
       </View>

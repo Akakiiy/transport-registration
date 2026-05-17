@@ -2,6 +2,7 @@ import { Text, View } from 'react-native';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
+import type { CountryCode } from 'libphonenumber-js';
 import { DEFAULT_COUNTRY_CODE } from '@shared/config';
 import { PhoneConfirmStep } from './steps/phone-confirm-step';
 import { registrationFormSchema } from './lib/schema';
@@ -13,12 +14,16 @@ type RegistrationFormProps = {
   formStep: RegistrationFormStep;
   setFormStep: (step: RegistrationFormStep) => void;
   onRegisterBackHandler?: (handler: (() => void) | null) => void;
+  initialPhone?: string;
+  initialCountryCode?: CountryCode;
 };
 
 export const RegistrationForm = ({
   formStep,
   setFormStep,
   onRegisterBackHandler,
+  initialPhone,
+  initialCountryCode,
 }: RegistrationFormProps) => {
   const { t } = useTranslation();
 
@@ -37,6 +42,8 @@ export const RegistrationForm = ({
       methods,
       formStep,
       setFormStep,
+      initialPhone,
+      initialCountryCode,
     });
 
   const renderFormStep = (step: RegistrationFormStep) => {

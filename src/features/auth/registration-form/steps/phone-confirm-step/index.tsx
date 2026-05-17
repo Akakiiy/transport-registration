@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Text, View } from 'react-native';
 import { Controller, useFormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { AppButton, PhoneInput } from '@shared/ui';
 import { COUNTRIES, getCountryByCode } from '@shared/config';
 import { mockSendPhoneCode, mockVerifySmsCode } from '@shared/lib/mock-api';
-import type { RegistrationFormStep, RegistrationFormValues } from '../../lib/types';
+import type { RegistrationFormStep, RegistrationFormValues, } from '../../lib/types';
 import { RESEND_TIMEOUT_MS, SMS_CODE_LENGTH } from '../../lib/constants';
 import { useResendTimer } from '../../lib/use-resend-timer';
 import { smsCodeSchema } from '../../lib/schema';
@@ -67,6 +67,11 @@ export const PhoneConfirmStep = ({
       setSmsError(null);
       setResendAvailableAt(undefined);
 
+      // Unregister back handler when leaving SMS stage
+      if (registerBackHandler) {
+        registerBackHandler(null);
+      }
+
       await saveRegistrationDraft({
         resendAvailableAt: undefined,
         step: 0,
@@ -77,19 +82,7 @@ export const PhoneConfirmStep = ({
         error,
       );
     }
-  }, [saveRegistrationDraft]);
-
-  // Register/unregister back handler based on stage
-  useEffect(() => {
-    if (registerBackHandler) {
-      registerBackHandler(isCodeStage ? handleBackFromSms : null);
-    }
-    return () => {
-      if (registerBackHandler) {
-        registerBackHandler(null);
-      }
-    };
-  }, [isCodeStage, handleBackFromSms, registerBackHandler]);
+  }, [saveRegistrationDraft, registerBackHandler]);
 
   const sendCodeAndStartTimer = async () => {
     const { phone } = getValues();
@@ -117,7 +110,15 @@ export const PhoneConfirmStep = ({
       setPhoneError(null);
 
       await sendCodeAndStartTimer();
+      
+      console.log('📱 [DEV] SMS code sent. Test code: 123456');
+      
       setIsCodeStage(true);
+      
+      // Register back handler when entering SMS stage
+      if (registerBackHandler) {
+        registerBackHandler(handleBackFromSms);
+      }
     } catch (error: unknown) {
       console.warn('[PhoneConfirmStep] Failed to send phone code', error);
       setPhoneError(t(getErrorMessage(error)));
@@ -144,9 +145,11 @@ export const PhoneConfirmStep = ({
     }
   };
 
-  const handleVerify = async () => {
+  const handleVerify = async (codeToVerify?: string) => {
+    const code = codeToVerify ?? smsCode;
+    
     // Validate SMS code locally
-    const validation = smsCodeSchema.safeParse(smsCode);
+    const validation = smsCodeSchema.safeParse(code);
     if (!validation.success) {
       setSmsError('errors.invalidSmsCode');
       return;
@@ -156,7 +159,7 @@ export const PhoneConfirmStep = ({
       setIsVerifying(true);
       setSmsError(null);
 
-      await mockVerifySmsCode(smsCode);
+      await mockVerifySmsCode(code);
 
       // Save draft for next step
       await saveRegistrationDraft({
@@ -194,9 +197,9 @@ export const PhoneConfirmStep = ({
               setSmsCode(value);
               setSmsError(null);
               if (value.length === SMS_CODE_LENGTH) {
-                // Auto-submit when code is complete
+                // Auto-submit when code is complete - pass the value directly
                 setTimeout(() => {
-                  handleVerify();
+                  handleVerify(value);
                 }, 100);
               }
             }}
@@ -216,12 +219,6 @@ export const PhoneConfirmStep = ({
           onPress={handleResend}
           disabled={!canResend || isVerifying}
           loading={isVerifying && !smsCode}
-          variant="secondary"
-        />
-
-        <AppButton
-          title={t('common.back')}
-          onPress={handleBackFromSms}
           variant="secondary"
         />
       </View>
