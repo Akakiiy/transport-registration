@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
-import { TextInput, View, Pressable, Text } from 'react-native';
-import { SMS_CODE_LENGTH } from '../../lib/constants';
+import { Pressable, Text, TextInput, View } from 'react-native';
+import { SMS_CODE_LENGTH } from '../../../../lib/constants';
 import { styles } from './styles';
 
 type SmsCodeInputProps = {
@@ -26,7 +26,7 @@ export const SmsCodeInput = ({ value, onChangeText, error }: SmsCodeInputProps) 
   const cells = Array.from({ length: SMS_CODE_LENGTH }).map((_, index) => {
     const char = value[index] || '';
     const isActive = isFocused && index === value.length;
-    
+
     return (
       <View
         key={index}

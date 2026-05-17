@@ -22,6 +22,8 @@ export const resources = {
         close: 'Закрыть',
         back: 'Назад',
         phoneConfirmedPlaceholder: 'Телефон подтвержден. Следующий шаг будет реализован далее.',
+        userInfoPlaceholder: 'Форма пользовательских данных будет реализована далее',
+        passwordPlaceholder: 'Форма создания пароля будет реализована далее',
       },
       profile: {
         title: 'Профиль',
@@ -94,6 +96,8 @@ export const resources = {
         close: 'Close',
         back: 'Back',
         phoneConfirmedPlaceholder: 'Phone confirmed. The next step will be implemented next.',
+        userInfoPlaceholder: 'User information form will be implemented next',
+        passwordPlaceholder: 'Password creation form will be implemented next',
       },
       profile: {
         title: 'Profile',

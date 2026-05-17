@@ -1,10 +1,6 @@
-import type { CountryCode } from 'libphonenumber-js';
+import { z } from 'zod';
+import { registrationFormSchema } from './schema';
 
-export type PhoneFormValues = {
-  phone: string;
-  countryCode: CountryCode;
-};
+export type { RegistrationFormStep } from '@shared/types';
 
-export type SmsCodeFormValues = {
-  code: string;
-};
+export type RegistrationFormValues = z.infer<typeof registrationFormSchema>;

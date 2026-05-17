@@ -7,7 +7,7 @@ const countryCodeEnum = z.enum(
   COUNTRIES.map(c => c.code) as [CountryCode, ...CountryCode[]],
 );
 
-export const phoneFormSchema = z.object({
+export const registrationFormSchema = z.object({
   phone: z.string().min(1, 'errors.required'),
   countryCode: countryCodeEnum,
 }).refine(
@@ -30,10 +30,8 @@ export const phoneFormSchema = z.object({
   },
 );
 
-export const smsCodeFormSchema = z.object({
-  code: z
-    .string()
-    .min(1, 'errors.required')
-    .regex(/^\d+$/, 'errors.invalidSmsCode')
-    .length(SMS_CODE_LENGTH, 'errors.invalidSmsCode'),
-});
+export const smsCodeSchema = z
+  .string()
+  .min(1, 'errors.required')
+  .regex(/^\d+$/, 'errors.invalidSmsCode')
+  .length(SMS_CODE_LENGTH, 'errors.invalidSmsCode');

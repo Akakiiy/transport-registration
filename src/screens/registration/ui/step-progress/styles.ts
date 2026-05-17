@@ -8,9 +8,9 @@ export const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   segment: {
+    borderRadius: 2,
     flex: 1,
     height: 4,
-    borderRadius: 2,
   },
   segmentActive: {
     backgroundColor: '#00BFA5',

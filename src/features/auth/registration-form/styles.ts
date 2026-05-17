@@ -4,15 +4,20 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  content: {
+  loadingText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginTop: 40,
+  },
+  placeholderContainer: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   placeholderText: {
     fontSize: 16,
     color: '#666',
     textAlign: 'center',
-    marginTop: 40,
   },
 });

@@ -5,20 +5,23 @@ export const styles = StyleSheet.create({
     gap: 20,
   },
   title: {
+    color: '#333',
     fontSize: 24,
     fontWeight: '700',
-    color: '#333',
     marginBottom: 8,
   },
   description: {
-    fontSize: 16,
     color: '#666',
+    fontSize: 16,
     lineHeight: 22,
     marginBottom: 8,
   },
+  smsCodeContainer: {
+    gap: 12,
+  },
   errorText: {
-    fontSize: 14,
     color: '#F44336',
+    fontSize: 14,
     textAlign: 'center',
   },
 });

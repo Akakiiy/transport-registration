@@ -1,6 +1,8 @@
 import type { CountryCode } from 'libphonenumber-js';
 import { UserRole } from './role';
 
+export type RegistrationFormStep = 0 | 1 | 2;
+
 export type RegistrationStep = 'phone-confirmation' | 'user-info' | 'password';
 
 export type PhoneConfirmationState = 'phone-input' | 'sms-code';
@@ -21,6 +23,7 @@ export type RegistrationData = {
 
 export type RegistrationDraft = {
   step: RegistrationStep;
+  formStep?: RegistrationFormStep;
   phoneConfirmationState?: PhoneConfirmationState;
   phone?: string;
   countryCode?: CountryCode;

@@ -1,156 +1,87 @@
-import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
+import { FormProvider, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import type { CountryCode } from 'libphonenumber-js';
-import { getDraft, saveDraft, clearDraft } from '@shared/lib/storage';
-import type { PhoneConfirmationState, RegistrationStep } from '@shared/types';
-import { RegistrationHeader } from './components/registration-header';
-import { StepProgress } from './components/step-progress';
-import { PhoneConfirmStep } from './components/phone-confirm-step';
+import { DEFAULT_COUNTRY_CODE } from '@shared/config';
+import { PhoneConfirmStep } from './steps/phone-confirm-step';
+import { registrationFormSchema } from './lib/schema';
+import { useRegistrationDraft } from './lib/use-registration-draft';
+import type { RegistrationFormStep, RegistrationFormValues } from './lib/types';
 import { styles } from './styles';
 
 type RegistrationFormProps = {
-  onBack: () => void;
-  onClose: () => void;
+  formStep: RegistrationFormStep;
+  setFormStep: (step: RegistrationFormStep) => void;
+  onRegisterBackHandler?: (handler: (() => void) | null) => void;
 };
 
-export const RegistrationForm = ({ onBack, onClose }: RegistrationFormProps) => {
+export const RegistrationForm = ({
+  formStep,
+  setFormStep,
+  onRegisterBackHandler,
+}: RegistrationFormProps) => {
   const { t } = useTranslation();
-  const [currentStep, setCurrentStep] = useState<RegistrationStep>('phone-confirmation');
-  const [phoneConfirmationState, setPhoneConfirmationState] = useState<PhoneConfirmationState>('phone-input');
-  const [phone, setPhone] = useState<string | undefined>();
-  const [countryCode, setCountryCode] = useState<CountryCode | undefined>();
-  const [resendAvailableAt, setResendAvailableAt] = useState<number | undefined>();
-  const [isPhoneConfirmed, setIsPhoneConfirmed] = useState(false);
 
-  // Restore draft on mount
-  useEffect(() => {
-    const restoreDraft = async () => {
-      try {
-        const draft = await getDraft();
-        if (draft && draft.step === 'phone-confirmation') {
-          setCurrentStep(draft.step);
-          setPhoneConfirmationState(draft.phoneConfirmationState || 'phone-input');
-          setPhone(draft.phone);
-          setCountryCode(draft.countryCode);
-          setResendAvailableAt(draft.resendAvailableAt);
-        }
-      } catch (error) {
-        console.warn('[RegistrationForm] Failed to restore draft', error);
-      }
-    };
+  const methods = useForm<RegistrationFormValues>({
+    resolver: zodResolver(registrationFormSchema),
+    mode: 'onTouched',
+    reValidateMode: 'onChange',
+    defaultValues: {
+      phone: '',
+      countryCode: DEFAULT_COUNTRY_CODE,
+    },
+  });
 
-    restoreDraft();
-  }, []);
+  const { isRestoring, restoredResendAvailableAt, saveRegistrationDraft } =
+    useRegistrationDraft({
+      methods,
+      formStep,
+      setFormStep,
+    });
 
-  const handlePhoneSubmit = async (
-    submittedPhone: string,
-    submittedCountryCode: CountryCode,
-    newResendAvailableAt: number,
-  ) => {
-    try {
-      setPhone(submittedPhone);
-      setCountryCode(submittedCountryCode);
-      setResendAvailableAt(newResendAvailableAt);
-      setPhoneConfirmationState('sms-code');
-
-      await saveDraft({
-        step: 'phone-confirmation',
-        phoneConfirmationState: 'sms-code',
-        phone: submittedPhone,
-        countryCode: submittedCountryCode,
-        resendAvailableAt: newResendAvailableAt,
-        updatedAt: Date.now(),
-      });
-    } catch (error) {
-      console.warn('[RegistrationForm] Failed to save draft after phone submit', error);
+  const renderFormStep = (step: RegistrationFormStep) => {
+    switch (step) {
+      case 0:
+        return (
+          <PhoneConfirmStep
+            initialResendAvailableAt={restoredResendAvailableAt}
+            onNext={() => setFormStep(1)}
+            saveRegistrationDraft={saveRegistrationDraft}
+            registerBackHandler={onRegisterBackHandler}
+          />
+        );
+      case 1:
+        return (
+          <View style={styles.placeholderContainer}>
+            <Text style={styles.placeholderText}>
+              {t('registration.userInfoPlaceholder')}
+            </Text>
+          </View>
+        );
+      case 2:
+        return (
+          <View style={styles.placeholderContainer}>
+            <Text style={styles.placeholderText}>
+              {t('registration.passwordPlaceholder')}
+            </Text>
+          </View>
+        );
+      default:
+        return null;
     }
   };
 
-  const handleSmsVerified = async () => {
-    try {
-      setIsPhoneConfirmed(true);
-      // For now, just update the draft to indicate phone is confirmed
-      // In the future, this would transition to user-info step
-      await saveDraft({
-        step: 'phone-confirmation',
-        phoneConfirmationState: 'sms-code',
-        phone,
-        countryCode,
-        updatedAt: Date.now(),
-      });
-    } catch (error) {
-      console.warn('[RegistrationForm] Failed to save draft after SMS verification', error);
-    }
-  };
-
-  const handleBackToPhoneInput = async () => {
-    try {
-      setPhoneConfirmationState('phone-input');
-      setResendAvailableAt(undefined);
-
-      await saveDraft({
-        step: 'phone-confirmation',
-        phoneConfirmationState: 'phone-input',
-        phone,
-        countryCode,
-        updatedAt: Date.now(),
-      });
-    } catch (error) {
-      console.warn('[RegistrationForm] Failed to save draft when going back to phone input', error);
-    }
-  };
-
-  const handleBack = async () => {
-    if (phoneConfirmationState === 'sms-code') {
-      handleBackToPhoneInput();
-    } else {
-      // Navigate back to login
-      onBack();
-    }
-  };
-
-  const handleClose = async () => {
-    try {
-      await clearDraft();
-      onClose();
-    } catch (error) {
-      console.warn('[RegistrationForm] Failed to clear draft on close', error);
-      onClose();
-    }
-  };
-
-  if (isPhoneConfirmed) {
+  if (isRestoring) {
     return (
       <View style={styles.container}>
-        <RegistrationHeader onBack={handleBack} onClose={handleClose} />
-        <StepProgress currentStep={1} totalSteps={3} />
-        <View style={styles.content}>
-          <Text style={styles.placeholderText}>
-            {t('registration.phoneConfirmedPlaceholder')}
-          </Text>
-        </View>
+        <Text style={styles.loadingText}>{t('common.loading')}</Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <RegistrationHeader onBack={handleBack} onClose={handleClose} />
-      <StepProgress currentStep={1} totalSteps={3} />
-      <View style={styles.content}>
-        {currentStep === 'phone-confirmation' ? (
-          <PhoneConfirmStep
-            initialPhone={phone}
-            initialCountryCode={countryCode}
-            initialState={phoneConfirmationState}
-            initialResendAvailableAt={resendAvailableAt}
-            onPhoneSubmit={handlePhoneSubmit}
-            onSmsVerified={handleSmsVerified}
-            onBackToPhoneInput={handleBackToPhoneInput}
-          />
-        ) : null}
-      </View>
-    </View>
+    <FormProvider {...methods}>
+      <View style={styles.container}>{renderFormStep(formStep)}</View>
+    </FormProvider>
   );
 };

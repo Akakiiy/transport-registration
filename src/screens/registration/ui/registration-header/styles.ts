@@ -2,35 +2,35 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
     alignItems: 'center',
+    flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
   backButton: {
-    padding: 8,
     minWidth: 40,
+    padding: 8,
   },
   backIcon: {
-    fontSize: 24,
     color: '#333',
+    fontSize: 24,
   },
   title: {
-    fontSize: 18,
-    fontWeight: '600',
     color: '#333',
     flex: 1,
+    fontSize: 18,
+    fontWeight: '600',
     textAlign: 'center',
   },
   closeButton: {
-    padding: 8,
-    minWidth: 40,
     alignItems: 'flex-end',
+    minWidth: 40,
+    padding: 8,
   },
   closeIcon: {
-    fontSize: 32,
     color: '#333',
+    fontSize: 32,
     lineHeight: 32,
   },
 });
