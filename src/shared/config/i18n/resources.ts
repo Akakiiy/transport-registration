@@ -61,7 +61,7 @@ export const resources = {
         en: 'EN',
       },
       errors: {
-        invalidSmsCode: 'Неверный SMS-код',
+        invalidSmsCode: 'Код не верный, либо истек',
         invalidIin: 'Неверный ИИН',
         required: 'Поле обязательно',
         invalidDate: 'Некорректная дата',
@@ -135,7 +135,7 @@ export const resources = {
         en: 'EN',
       },
       errors: {
-        invalidSmsCode: 'Invalid SMS code',
+        invalidSmsCode: 'Code is incorrect or expired',
         invalidIin: 'Invalid IIN',
         required: 'Required field',
         invalidDate: 'Invalid date',

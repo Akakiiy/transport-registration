@@ -1,5 +1,5 @@
 const DEFAULT_DELAY_MS = 1000;
-const VALID_SMS_CODE = '123456';
+const VALID_SMS_CODE = '1111';
 
 export const wait = async (ms: number): Promise<void> => {
   await new Promise((resolve) => {
