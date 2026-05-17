@@ -34,6 +34,7 @@ export const styles = StyleSheet.create({
   },
   actionArea: {
     paddingTop: 16,
+    paddingBottom: 14,
     borderTopWidth: 1,
     borderTopColor: '#e5e7eb',
   },

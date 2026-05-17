@@ -2,15 +2,10 @@ import { useCallback, useMemo, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { Controller, useFormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { AppButton, AppInput } from '@shared/ui';
+import { CITIZENSHIP_OPTIONS, DRIVER_LICENSE_CATEGORY_OPTIONS } from '@shared/config';
+import { AppButton, AppInput, DateField, SelectField } from '@shared/ui';
 import type { RegistrationFormStep, RegistrationFormValues, } from '../../lib/types';
 import { registrationDetailsStepSchema } from '../../lib/schema';
-import { DateField } from './components/date-field';
-import { SelectField } from './components/select-field';
-import {
-  CITIZENSHIP_OPTIONS,
-  DRIVER_LICENSE_CATEGORY_OPTIONS,
-} from './lib/options';
 import { styles } from './styles';
 
 type RegistrationDetailsStepProps = {

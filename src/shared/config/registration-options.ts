@@ -1,9 +1,9 @@
-export type CitizenshipOption = {
+export type OptionConfig = {
   value: string;
   labelKey: string;
 };
 
-export const CITIZENSHIP_OPTIONS: CitizenshipOption[] = [
+export const CITIZENSHIP_OPTIONS: OptionConfig[] = [
   { value: 'Kazakhstan', labelKey: 'registration.citizenshipKazakhstan' },
   { value: 'Russia', labelKey: 'registration.citizenshipRussia' },
   { value: 'Belarus', labelKey: 'registration.citizenshipBelarus' },

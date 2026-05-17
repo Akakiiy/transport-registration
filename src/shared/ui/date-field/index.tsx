@@ -57,7 +57,6 @@ export const DateField = ({
   onChange,
 }: DateFieldProps) => {
   const [isPickerVisible, setIsPickerVisible] = useState(false);
-
   const pickerDate = useMemo(() => parseDateValue(value) ?? new Date(), [value]);
 
   const handleChange = (_event: DateTimePickerEvent, selectedDate?: Date) => {

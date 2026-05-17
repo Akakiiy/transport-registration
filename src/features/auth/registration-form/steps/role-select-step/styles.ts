@@ -50,5 +50,6 @@ export const styles = StyleSheet.create({
   },
   actionArea: {
     paddingTop: 16,
+    paddingBottom: 14,
   },
 });

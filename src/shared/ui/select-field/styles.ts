@@ -16,12 +16,17 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     overflow: 'hidden',
+    width: '100%',
+  },
+  pickerContainer: {
+    width: '100%',
   },
   inputError: {
     borderColor: '#ef4444',
   },
   picker: {
     color: '#111827',
+    width: '100%',
   },
   errorText: {
     color: '#ef4444',

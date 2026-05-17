@@ -3,7 +3,8 @@ import { Text, View } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { AppButton, AppInput } from '@shared/ui';
+import { CITIZENSHIP_OPTIONS, DRIVER_LICENSE_CATEGORY_OPTIONS } from '@shared/config';
+import { AppButton, AppInput, DateField, SelectField } from '@shared/ui';
 import { saveProfile } from '@shared/lib/storage';
 import type { UserProfile } from '@shared/types';
 import { createEditProfileFormSchema } from './lib/schema';
@@ -19,6 +20,25 @@ export const EditProfileForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isCarrier = profile.role === 'carrier';
   const roleText = isCarrier ? t('profile.carrier') : t('profile.customer');
+  const today = useMemo(() => new Date(), []);
+
+  const citizenshipOptions = useMemo(
+    () =>
+      CITIZENSHIP_OPTIONS.map(option => ({
+        value: option.value,
+        label: t(option.labelKey),
+      })),
+    [t],
+  );
+
+  const driverLicenseCategoryOptions = useMemo(
+    () =>
+      DRIVER_LICENSE_CATEGORY_OPTIONS.map(category => ({
+        value: category,
+        label: category,
+      })),
+    [],
+  );
 
   const {
     control,
@@ -165,11 +185,12 @@ export const EditProfileForm = ({
           control={control}
           name="birthDate"
           render={({ field: { onChange, value } }) => (
-            <AppInput
+            <DateField
               label={t('profile.birthDate')}
-              value={value}
-              onChangeText={onChange}
-              placeholder={t('registration.datePlaceholder')}
+              value={value ?? ''}
+              onChange={onChange}
+              placeholder={t('profile.datePlaceholder')}
+              maximumDate={today}
               error={errors.birthDate?.message ? t(errors.birthDate.message) : undefined}
             />
           )}
@@ -179,10 +200,12 @@ export const EditProfileForm = ({
           control={control}
           name="citizenship"
           render={({ field: { onChange, value } }) => (
-            <AppInput
+            <SelectField
               label={t('profile.citizenship')}
-              value={value}
-              onChangeText={onChange}
+              value={value ?? ''}
+              onChange={onChange}
+              options={citizenshipOptions}
+              placeholder={t('profile.citizenshipPlaceholder')}
               error={errors.citizenship?.message ? t(errors.citizenship.message) : undefined}
             />
           )}
@@ -226,11 +249,12 @@ export const EditProfileForm = ({
           control={control}
           name="documentIssueDate"
           render={({ field: { onChange, value } }) => (
-            <AppInput
+            <DateField
               label={t('profile.documentIssueDate')}
-              value={value}
-              onChangeText={onChange}
-              placeholder={t('registration.datePlaceholder')}
+              value={value ?? ''}
+              onChange={onChange}
+              placeholder={t('profile.datePlaceholder')}
+              maximumDate={today}
               error={
                 errors.documentIssueDate?.message
                   ? t(errors.documentIssueDate.message)
@@ -282,10 +306,12 @@ export const EditProfileForm = ({
               control={control}
               name="driverLicenseCategory"
               render={({ field: { onChange, value } }) => (
-                <AppInput
+                <SelectField
                   label={t('profile.driverLicenseCategory')}
-                  value={value}
-                  onChangeText={onChange}
+                  value={value ?? ''}
+                  onChange={onChange}
+                  options={driverLicenseCategoryOptions}
+                  placeholder={t('profile.driverLicenseCategoryPlaceholder')}
                   error={
                     errors.driverLicenseCategory?.message
                       ? t(errors.driverLicenseCategory.message)
@@ -299,11 +325,12 @@ export const EditProfileForm = ({
               control={control}
               name="driverLicenseIssueDate"
               render={({ field: { onChange, value } }) => (
-                <AppInput
+                <DateField
                   label={t('profile.driverLicenseIssueDate')}
-                  value={value}
-                  onChangeText={onChange}
-                  placeholder={t('registration.datePlaceholder')}
+                  value={value ?? ''}
+                  onChange={onChange}
+                  placeholder={t('profile.datePlaceholder')}
+                  maximumDate={today}
                   error={
                     errors.driverLicenseIssueDate?.message
                       ? t(errors.driverLicenseIssueDate.message)

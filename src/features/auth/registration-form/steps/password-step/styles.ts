@@ -36,6 +36,6 @@ export const styles = StyleSheet.create({
   },
   actionArea: {
     marginTop: 'auto',
-    paddingBottom: 8,
+    paddingBottom: 14,
   },
 });
