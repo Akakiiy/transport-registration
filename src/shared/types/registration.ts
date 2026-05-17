@@ -19,6 +19,10 @@ export type RegistrationData = {
   driverLicenseNumber?: string;
   driverLicenseCategory?: string;
   driverLicenseIssueDate?: string;
+  companyName?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
 };
 
 export type RegistrationDraft = {

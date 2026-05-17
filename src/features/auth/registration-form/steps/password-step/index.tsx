@@ -75,6 +75,10 @@ export const PasswordStep = ({
           documentNumber: '',
           documentIssueDate: '',
           documentIssuer: '',
+          companyName: formValues.companyName,
+          email: formValues.email,
+          firstName: formValues.firstName,
+          lastName: formValues.lastName,
         },
       };
 
