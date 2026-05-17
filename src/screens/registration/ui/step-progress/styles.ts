@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     height: 4,
   },
   segmentActive: {
-    backgroundColor: '#00BFA5',
+    backgroundColor: '#3b82f6',
   },
   segmentInactive: {
     backgroundColor: '#E0E0E0',

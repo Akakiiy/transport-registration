@@ -3,6 +3,8 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  contentSection: {
     gap: 20,
   },
   title: {
@@ -20,6 +22,10 @@ export const styles = StyleSheet.create({
   smsCodeContainer: {
     gap: 12,
     marginBottom: 8,
+  },
+  actionArea: {
+    marginTop: 'auto',
+    paddingBottom: 8,
   },
   errorText: {
     color: '#F44336',

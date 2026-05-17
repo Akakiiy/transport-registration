@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { View } from 'react-native';
+import { KeyboardAvoidingView, Platform, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ROUTES } from '@app/navigation/routes';
@@ -48,7 +48,10 @@ export const RegistrationScreen = ({ navigation, route }: RegistrationScreenProp
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
         <RegistrationHeader onBack={handleBack} onClose={handleClose} />
         <StepProgress currentStep={formStep} />
         <View style={styles.content}>
@@ -60,7 +63,7 @@ export const RegistrationScreen = ({ navigation, route }: RegistrationScreenProp
             initialCountryCode={route.params?.countryCode}
           />
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

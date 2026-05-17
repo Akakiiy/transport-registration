@@ -185,42 +185,46 @@ export const PhoneConfirmStep = ({
 
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>{t('registration.phoneConfirmTitle')}</Text>
-        <Text style={styles.description}>
-          {t('registration.smsDescription')} {formattedPhone}
-        </Text>
+        <View style={styles.contentSection}>
+          <Text style={styles.title}>{t('registration.phoneConfirmTitle')}</Text>
+          <Text style={styles.description}>
+            {t('registration.smsDescription')} {formattedPhone}
+          </Text>
 
-        <View style={styles.smsCodeContainer}>
-          <SmsCodeInput
-            value={smsCode}
-            onChangeText={value => {
-              setSmsCode(value);
-              setSmsError(null);
-              if (value.length === SMS_CODE_LENGTH) {
-                // Auto-submit when code is complete - pass the value directly
-                setTimeout(() => {
-                  handleVerify(value);
-                }, 100);
-              }
-            }}
-            error={Boolean(smsError)}
-          />
-          {smsError ? (
-            <Text style={styles.errorText}>{t(smsError)}</Text>
-          ) : null}
+          <View style={styles.smsCodeContainer}>
+            <SmsCodeInput
+              value={smsCode}
+              onChangeText={value => {
+                setSmsCode(value);
+                setSmsError(null);
+                if (value.length === SMS_CODE_LENGTH) {
+                  // Auto-submit when code is complete - pass the value directly
+                  setTimeout(() => {
+                    handleVerify(value);
+                  }, 100);
+                }
+              }}
+              error={Boolean(smsError)}
+            />
+            {smsError ? (
+              <Text style={styles.errorText}>{t(smsError)}</Text>
+            ) : null}
+          </View>
         </View>
 
-        <AppButton
-          title={
-            canResend
-              ? t('registration.resendCode')
-              : `${t('registration.resendCodeIn')} ${formattedRemaining}`
-          }
-          onPress={handleResend}
-          disabled={!canResend || isVerifying}
-          loading={isVerifying && !smsCode}
-          variant="secondary"
-        />
+        <View style={styles.actionArea}>
+          <AppButton
+            title={
+              canResend
+                ? t('registration.resendCode')
+                : `${t('registration.resendCodeIn')} ${formattedRemaining}`
+            }
+            onPress={handleResend}
+            disabled={!canResend || isVerifying}
+            loading={isVerifying && !smsCode}
+            variant={canResend ? 'primary' : 'secondary'}
+          />
+        </View>
       </View>
     );
   }
@@ -228,46 +232,50 @@ export const PhoneConfirmStep = ({
   // Phone Input Stage
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{t('registration.phoneConfirmTitle')}</Text>
-      <Text style={styles.description}>
-        {t('registration.phoneConfirmDescription')}
-      </Text>
+      <View style={styles.contentSection}>
+        <Text style={styles.title}>{t('registration.phoneConfirmTitle')}</Text>
+        <Text style={styles.description}>
+          {t('registration.phoneConfirmDescription')}
+        </Text>
 
-      <Controller
-        control={control}
-        name="phone"
-        render={({ field: { onBlur, onChange, value } }) => (
-          <PhoneInput
-            countries={COUNTRIES}
-            countryCode={countryCode}
-            error={errors.phone?.message ? t(errors.phone.message) : undefined}
-            label={t('login.phoneLabel')}
-            onBlur={onBlur}
-            onChangeCountry={nextCountryCode => {
-              setValue('countryCode', nextCountryCode, {
-                shouldTouch: true,
-                shouldValidate: true,
-              });
-              setValue('phone', '', {
-                shouldTouch: true,
-                shouldValidate: true,
-              });
-            }}
-            onChangeText={onChange}
-            placeholder={t('login.phonePlaceholder')}
-            value={value}
-          />
-        )}
-      />
+        <Controller
+          control={control}
+          name="phone"
+          render={({ field: { onBlur, onChange, value } }) => (
+            <PhoneInput
+              countries={COUNTRIES}
+              countryCode={countryCode}
+              error={errors.phone?.message ? t(errors.phone.message) : undefined}
+              label={t('login.phoneLabel')}
+              onBlur={onBlur}
+              onChangeCountry={nextCountryCode => {
+                setValue('countryCode', nextCountryCode, {
+                  shouldTouch: true,
+                  shouldValidate: true,
+                });
+                setValue('phone', '', {
+                  shouldTouch: true,
+                  shouldValidate: true,
+                });
+              }}
+              onChangeText={onChange}
+              placeholder={t('login.phonePlaceholder')}
+              value={value}
+            />
+          )}
+        />
 
-      {phoneError ? <Text style={styles.errorText}>{phoneError}</Text> : null}
+        {phoneError ? <Text style={styles.errorText}>{phoneError}</Text> : null}
+      </View>
 
-      <AppButton
-        title={t('registration.sendCode')}
-        onPress={handleSendCode}
-        disabled={isSending}
-        loading={isSending}
-      />
+      <View style={styles.actionArea}>
+        <AppButton
+          title={t('registration.sendCode')}
+          onPress={handleSendCode}
+          disabled={isSending}
+          loading={isSending}
+        />
+      </View>
     </View>
   );
 };
