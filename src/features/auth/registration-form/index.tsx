@@ -76,10 +76,7 @@ export const RegistrationForm = ({
         );
       case 2:
         return (
-          <PasswordStep
-            onComplete={onNavigateToProfile}
-            saveRegistrationDraft={saveRegistrationDraft}
-          />
+          <PasswordStep onComplete={onNavigateToProfile} />
         );
       default:
         return null;

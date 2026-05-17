@@ -46,7 +46,7 @@ export const useAppBootstrap = (): UseAppBootstrapReturn => {
         // Check if user has a profile (logged in)
         const profile = await getProfile();
         if (profile) {
-          setInitialRouteName(ROUTES.Profile);
+          setInitialRouteName(ROUTES.AuthPin);
           return;
         }
 

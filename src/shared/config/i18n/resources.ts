@@ -42,6 +42,14 @@ export const resources = {
         passwordReqSpecial: 'Минимум 1 специальный символ',
         complete: 'Готово',
       },
+      authPin: {
+        title: 'Введите PIN-код',
+        logout: 'Выйти',
+        forgot: 'Забыли PIN-код?',
+        invalidPin: 'Неверный PIN-код',
+        forgotTitle: 'Забыли PIN-код?',
+        forgotMessage: 'Обратитесь в службу поддержки для сброса PIN-кода',
+      },
       profile: {
         title: 'Профиль',
       },
@@ -139,6 +147,14 @@ export const resources = {
         passwordReqDigit: 'At least 1 digit (0–9)',
         passwordReqSpecial: 'At least 1 special character',
         complete: 'Done',
+      },
+      authPin: {
+        title: 'Enter PIN Code',
+        logout: 'Log out',
+        forgot: 'Forgot PIN?',
+        invalidPin: 'Invalid PIN code',
+        forgotTitle: 'Forgot PIN?',
+        forgotMessage: 'Contact support to reset your PIN code',
       },
       profile: {
         title: 'Profile',

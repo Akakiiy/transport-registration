@@ -3,17 +3,14 @@ import { Text, View } from 'react-native';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { AppButton, PasswordInput } from '@shared/ui';
-import { clearDraft } from '@shared/lib/storage';
-import type { RegistrationFormStep, RegistrationFormValues } from '../../lib/types';
+import { clearDraft, saveProfile } from '@shared/lib/storage';
+import type { UserProfile } from '@shared/types';
+import type { RegistrationFormValues } from '../../lib/types';
 import { PasswordRequirement } from './components/password-requirement';
 import { styles } from './styles';
 
 type PasswordStepProps = {
   onComplete: () => void;
-  saveRegistrationDraft: (params?: {
-    resendAvailableAt?: number;
-    step?: RegistrationFormStep;
-  }) => Promise<void>;
 };
 
 const getErrorMessage = (error: unknown): string => {
@@ -25,10 +22,9 @@ const getErrorMessage = (error: unknown): string => {
 
 export const PasswordStep = ({
   onComplete,
-  saveRegistrationDraft,
 }: PasswordStepProps) => {
   const { t } = useTranslation();
-  const { control } = useFormContext<RegistrationFormValues>();
+  const { control, getValues } = useFormContext<RegistrationFormValues>();
 
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState<string | null>(null);
@@ -57,10 +53,35 @@ export const PasswordStep = ({
       setIsSubmitting(true);
       setPasswordError(null);
 
-      // Save draft without password for security
-      await saveRegistrationDraft({ step: 2 });
+      // Get form values to build profile
+      const formValues = getValues();
 
-      // Clear draft after successful completion
+      // Build fullName from firstName and lastName
+      const fullName = [formValues.firstName, formValues.lastName]
+        .filter(Boolean)
+        .join(' ')
+        .trim();
+
+      // Build minimal UserProfile with available data
+      const profile: UserProfile = {
+        phone: formValues.phone,
+        role: 'customer',
+        data: {
+          fullName: fullName || 'User',
+          birthDate: '',
+          citizenship: '',
+          phone: formValues.phone,
+          iin: '',
+          documentNumber: '',
+          documentIssueDate: '',
+          documentIssuer: '',
+        },
+      };
+
+      // Save profile first
+      await saveProfile(profile);
+
+      // Clear draft after successful profile save
       await clearDraft();
 
       console.log('[DEV] Registration completed');
@@ -72,7 +93,7 @@ export const PasswordStep = ({
     } finally {
       setIsSubmitting(false);
     }
-  }, [canSubmit, saveRegistrationDraft, onComplete]);
+  }, [canSubmit, getValues, onComplete]);
 
   return (
     <View style={styles.container}>
